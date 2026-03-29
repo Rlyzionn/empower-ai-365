@@ -24,7 +24,12 @@
       "Bash(powershell.exe -Command \"\\(Invoke-WebRequest -Uri ''http://localhost:3000/index.html'' -UseBasicParsing\\).Content.Substring\\(0,200\\)\")",
       "Bash(powershell.exe -Command \":*)",
       "Bash(powershell.exe -Command \"$headers = @{''Content-Type''=''application/json'';''Origin''=''http://localhost:3000''}; $body = ''{\"\"metadata\"\":{\"\"source\"\":\"\"landing_demo\"\"}}''; $r = Invoke-WebRequest -Uri ''http://localhost:3001/api/retell/web-call'' -Method POST -Headers $headers -Body $body -UseBasicParsing; Write-Host $r.StatusCode; Write-Host $r.Content\")",
-      "Bash(\"C:\\\\Program Files\\\\nodejs\\\\node.exe\" -e \"fetch\\(''http://localhost:3001/api/retell/web-call'',{method:''POST'',headers:{''Content-Type'':''application/json'',''Origin'':''http://localhost:3000''},body:JSON.stringify\\({metadata:{source:''test''}}\\)}\\).then\\(r=>r.json\\(\\)\\).then\\(d=>console.log\\(''status:ok access_token:'',d.access_token?''present'':''MISSING'',''call_id:'',d.call_id||d.error\\)\\).catch\\(e=>console.error\\(''ERR:'',e.message\\)\\)\")"
+      "Bash(\"C:\\\\Program Files\\\\nodejs\\\\node.exe\" -e \"fetch\\(''http://localhost:3001/api/retell/web-call'',{method:''POST'',headers:{''Content-Type'':''application/json'',''Origin'':''http://localhost:3000''},body:JSON.stringify\\({metadata:{source:''test''}}\\)}\\).then\\(r=>r.json\\(\\)\\).then\\(d=>console.log\\(''status:ok access_token:'',d.access_token?''present'':''MISSING'',''call_id:'',d.call_id||d.error\\)\\).catch\\(e=>console.error\\(''ERR:'',e.message\\)\\)\")",
+      "Bash(\"C:\\\\Program Files\\\\nodejs\\\\node.exe\" -e \"const fs=require\\(''fs''\\); const lock=JSON.parse\\(fs.readFileSync\\(''package-lock.json'',''utf8''\\)\\); console.log\\(''lock name:'', lock.name, ''lockfileVersion:'', lock.lockfileVersion, ''packages count:'', Object.keys\\(lock.packages||{}\\).length\\)\")",
+      "Bash(del package-lock.json)",
+      "Bash(\"C:\\\\Program Files\\\\nodejs\\\\npm.cmd\" install)",
+      "Bash(powershell.exe -Command \"Remove-Item ''C:\\\\Users\\\\rlyzion\\\\Desktop\\\\Proj\\\\package-lock.json'' -Force; Write-Host ''Deleted''\")",
+      "Bash(powershell.exe -Command \"Get-Content ''C:\\\\Users\\\\rlyzion\\\\Desktop\\\\Proj\\\\backend\\\\db\\\\git key.txt''\")"
     ]
   }
 }

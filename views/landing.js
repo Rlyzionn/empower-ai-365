@@ -383,17 +383,19 @@ async function startVoiceDemo() {
     if (sub)    sub.textContent   = s;
   }
 
-  // ── Check if Retell SDK is available ─────────────────────
-  // UMD bundle exposes: window.retellClientJsSdk.RetellWebClient
-  const RetellSDK =
-    (window.retellClientJsSdk && window.retellClientJsSdk.RetellWebClient) ||
-    window.RetellWebClient ||
-    (window.Retell && window.Retell.RetellWebClient);
-  if (!RetellSDK) {
-    setStatus('Connection Error', 'Voice SDK failed to load — please refresh.');
-    if (status) status.innerHTML = '<span class="vm-status-dot" style="background:var(--red)"></span> SDK not loaded — try refreshing';
-    return;
+  // ── Load Retell SDK on demand via esm.sh (handles all deps) ─
+  if (!window._RetellWebClient) {
+    setStatus('Loading voice engine…', 'One moment');
+    try {
+      const mod = await import('https://esm.sh/retell-client-js-sdk');
+      window._RetellWebClient = mod.RetellWebClient;
+    } catch (e) {
+      setStatus('SDK Failed to Load', 'Please refresh and try again.');
+      if (status) status.innerHTML = '<span class="vm-status-dot" style="background:var(--red)"></span> Failed to load voice engine';
+      return;
+    }
   }
+  const RetellSDK = window._RetellWebClient;
 
   // ── Get web call access token from our backend ───────────
   setStatus('Connecting to Empower…', 'Starting your voice session');

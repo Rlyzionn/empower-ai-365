@@ -188,15 +188,20 @@ function renderLanding() {
     <!-- ── Voice Demo Modal ──────────────────────── -->
     <div class="modal-overlay" id="voice-modal" style="display:none" onclick="closeVoiceModal(event)">
       <div class="lp-modal voice-modal" onclick="event.stopPropagation()">
-        <button class="lp-modal-close" onclick="closeVoiceModal()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <button class="vm-close-btn" onclick="forceCloseVoiceModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
+        <div class="vm-brand-tag">
+          <span class="vm-brand-pulse"></span>
+          Powered by Empower Voice Agent
+        </div>
         <div class="vm-orb" id="vm-orb">
           <div class="vm-ring vm-ring-1"></div>
           <div class="vm-ring vm-ring-2"></div>
           <div class="vm-ring vm-ring-3"></div>
+          <div class="vm-ring vm-ring-4"></div>
           <div class="vm-core">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="34" height="34">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="30" height="30">
               <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
               <path d="M19 10v1a7 7 0 0 1-14 0v-1"/>
               <line x1="12" y1="18" x2="12" y2="22"/>
@@ -204,16 +209,19 @@ function renderLanding() {
             </svg>
           </div>
         </div>
-        <h3 class="vm-title" id="vm-title">Connecting to Empower…</h3>
-        <p class="vm-sub" id="vm-sub">Starting your voice session</p>
-        <div class="vm-waveform">
-          ${Array.from({length:24},(_,i)=>`<div class="wf-bar" style="animation-delay:${(i*0.07).toFixed(2)}s;height:${8+Math.sin(i*0.6)*12}px"></div>`).join('')}
+        <h3 class="vm-title" id="vm-title">Empower AI</h3>
+        <p class="vm-sub" id="vm-sub">Initializing voice session…</p>
+        <div class="vm-waveform" id="vm-waveform">
+          ${Array.from({length:32},(_,i)=>`<div class="wf-bar" style="animation-delay:${(i*0.05).toFixed(2)}s;height:${6+Math.sin(i*0.5)*16}px"></div>`).join('')}
         </div>
         <div class="vm-status" id="vm-status">
           <span class="vm-status-dot"></span>
-          Phase 2 — Retell AI Voice Integration Coming Soon
+          <span id="vm-status-text">Connecting to Empower Voice Agent…</span>
         </div>
-        <button class="lp-submit-btn" style="margin-top:20px" onclick="closeVoiceModal()">Close</button>
+        <button class="vm-end-btn" id="vm-end-btn" onclick="forceCloseVoiceModal()" style="display:none">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45c.98.37 2.05.6 3.14.6a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2C8.95 22 2 15.05 2 6.5a2 2 0 0 1 2-2H7a2 2 0 0 1 2 2c0 1.1.23 2.16.6 3.14a2 2 0 0 1-.45 2.11L8.68 12.9"/></svg>
+          End Call
+        </button>
       </div>
     </div>
 
@@ -366,8 +374,11 @@ let _retellClient = null;
 let _callActive   = false;
 
 async function startVoiceDemo() {
+  // Guard: prevent opening multiple instances
   const m = document.getElementById('voice-modal');
   if (!m) return;
+  if (m.style.display === 'flex') return;
+  if (_callActive) return;
   m.style.display = 'flex';
   requestAnimationFrame(() => m.classList.add('modal-visible'));
 
@@ -422,16 +433,20 @@ async function startVoiceDemo() {
 
     _retellClient.on('call_started',  () => {
       _callActive = true;
-      setStatus('Empower is listening', 'Speak now — your AI agent is live');
-      if (wf) wf.style.opacity = '1';
-      if (status) status.innerHTML = '<span class="vm-status-dot" style="background:var(--green);animation:pulse 1s infinite"></span> Live Call — Powered by Retell AI + ElevenLabs';
+      setStatus('Empower', 'Live — speak now');
+      if (wf) wf.classList.add('wf-active');
+      if (status) status.innerHTML = '<span class="vm-status-dot" style="background:#22c55e;animation:pulse 1s infinite"></span><span>Live · Powered by Empower Voice Agent</span>';
+      const endBtn = document.getElementById('vm-end-btn');
+      if (endBtn) endBtn.style.display = 'flex';
     });
 
     _retellClient.on('call_ended', () => {
       _callActive = false;
       setStatus('Call Ended', 'Thanks for trying Empower AI 365!');
       if (orb) orb.classList.remove('vm-orb-active');
-      if (wf) wf.style.opacity = '0.3';
+      if (wf) wf.classList.remove('wf-active');
+      const endBtn = document.getElementById('vm-end-btn');
+      if (endBtn) endBtn.style.display = 'none';
     });
 
     _retellClient.on('error', (err) => {
@@ -448,32 +463,37 @@ async function startVoiceDemo() {
   }
 }
 
-function closeVoiceModal(e) {
-  if (e && e.target !== document.getElementById('voice-modal')) return;
-  // Stop active call
+function _doCloseVoiceModal() {
   if (_retellClient && _callActive) {
     try { _retellClient.stopCall(); } catch(_) {}
-    _callActive = false;
   }
+  _callActive = false;
+  _retellClient = null;
   const m = document.getElementById('voice-modal');
   if (!m) return;
   m.classList.remove('modal-visible');
   document.getElementById('vm-orb')?.classList.remove('vm-orb-active');
+  document.getElementById('vm-waveform')?.classList.remove('wf-active');
+  const endBtn = document.getElementById('vm-end-btn');
+  if (endBtn) endBtn.style.display = 'none';
   const title = document.getElementById('vm-title');
   const sub   = document.getElementById('vm-sub');
-  if (title) title.textContent = 'Connecting to Empower…';
-  if (sub)   sub.textContent   = 'Starting your voice session';
-  setTimeout(() => { m.style.display = 'none'; }, 250);
+  if (title) title.textContent = 'Empower AI';
+  if (sub)   sub.textContent   = 'Initializing voice session…';
+  if (document.getElementById('vm-status'))
+    document.getElementById('vm-status').innerHTML = '<span class="vm-status-dot"></span><span>Connecting to Empower Voice Agent…</span>';
+  setTimeout(() => { m.style.display = 'none'; }, 300);
 }
 
+// Called from backdrop click — only close if clicking the backdrop itself
 function closeVoiceModal(e) {
   if (e && e.target !== document.getElementById('voice-modal')) return;
-  const m = document.getElementById('voice-modal');
-  if (!m) return;
-  m.classList.remove('modal-visible');
-  document.getElementById('vm-orb')?.classList.remove('vm-orb-active');
-  document.getElementById('vm-title') && (document.getElementById('vm-title').textContent = 'Connecting to Empower…');
-  setTimeout(() => { m.style.display = 'none'; }, 250);
+  _doCloseVoiceModal();
+}
+
+// Called from X button and End Call — always closes
+function forceCloseVoiceModal() {
+  _doCloseVoiceModal();
 }
 
 function showGetAgentModal() {

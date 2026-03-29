@@ -186,6 +186,50 @@ router.get('/phone-numbers', requireAuth, asyncHandler(async (req, res) => {
   res.json({ data: numbers });
 }));
 
+// ── POST /api/retell/phone-numbers ───────────────────────────
+// Import/register a phone number into Retell
+router.post('/phone-numbers', requireAuth, requireOwner, asyncHandler(async (req, res) => {
+  const { phone_number, agent_id, client_id } = req.body;
+  if (!phone_number) {
+    return res.status(400).json({ error: 'phone_number is required.' });
+  }
+  const result = await retell.importPhoneNumber(phone_number, agent_id || null);
+  // Optionally link to client in DB
+  if (client_id && agent_id) {
+    await supabaseAdmin
+      .from('clients')
+      .update({ phone_number })
+      .eq('id', client_id);
+  }
+  res.json({ data: result });
+}));
+
+// ── DELETE /api/retell/phone-numbers/:phone ──────────────────
+// Release a phone number from Retell
+router.delete('/phone-numbers/:phone', requireAuth, requireOwner, asyncHandler(async (req, res) => {
+  const phone = decodeURIComponent(req.params.phone);
+  await retell.deletePhoneNumber(phone);
+  res.json({ success: true });
+}));
+
+// ── PATCH /api/retell/phone-numbers/:phone ───────────────────
+// Update a phone number's agent assignment
+router.patch('/phone-numbers/:phone', requireAuth, requireOwner, asyncHandler(async (req, res) => {
+  const phone = decodeURIComponent(req.params.phone);
+  const { agent_id, client_id } = req.body;
+  const updateData = {};
+  if (agent_id !== undefined) updateData.inbound_agent_id = agent_id;
+  const result = await retell.updatePhoneNumber(phone, updateData);
+  // Update client link in DB if provided
+  if (client_id && agent_id) {
+    await supabaseAdmin
+      .from('clients')
+      .update({ retell_agent_id: agent_id })
+      .eq('id', client_id);
+  }
+  res.json({ data: result });
+}));
+
 // ── POST /api/retell/setup-demo-agent ───────────────────────
 // One-time setup: creates the "Empower AI 365" demo agent
 // Stores the agent ID. Call this ONCE after Phase 2 setup.

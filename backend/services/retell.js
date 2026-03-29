@@ -89,6 +89,23 @@ const retell = {
     body: JSON.stringify({ area_code: areaCode, inbound_agent_id: agentId }),
   }),
 
+  importPhoneNumber: (phoneNumber, agentId) => retellFetch('/v2/phone-number/create', {
+    method: 'POST',
+    body: JSON.stringify({
+      phone_number: phoneNumber,
+      ...(agentId ? { inbound_agent_id: agentId } : {}),
+    }),
+  }),
+
+  deletePhoneNumber: (phoneNumber) => retellFetch(`/v2/phone-number/${encodeURIComponent(phoneNumber)}`, {
+    method: 'DELETE',
+  }),
+
+  updatePhoneNumber: (phoneNumber, data) => retellFetch(`/v2/phone-number/${encodeURIComponent(phoneNumber)}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  }),
+
   // ── Voices (ElevenLabs + others via Retell) ────────────────
   listVoices: () => retellFetch('/list-voices'),
 

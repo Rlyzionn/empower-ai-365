@@ -319,6 +319,141 @@ function configRow(label, val) {
   </div>`;
 }
 
+// ── Edit Client Modal ─────────────────────────────────────────
+function renderEditClientModal(c) {
+  return `
+  <div id="edit-client-modal" class="modal-overlay" onclick="if(event.target===this)closeEditClientModal()" style="opacity:0;transition:opacity 0.22s ease">
+    <div id="edit-client-modal-box" style="position:relative;width:100%;max-width:560px;background:rgba(8,8,12,0.97);border:1px solid rgba(255,255,255,0.09);border-radius:20px;padding:32px;box-shadow:0 32px 90px rgba(0,0,0,0.85);backdrop-filter:blur(40px);transform:translateY(18px);transition:transform 0.24s cubic-bezier(0.22,1,0.36,1)">
+      <button onclick="closeEditClientModal()" style="position:absolute;top:14px;right:14px;width:28px;height:28px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.09);border-radius:50%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);cursor:pointer;font-size:14px">✕</button>
+
+      <div style="font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:4px">Edit Client</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:22px">${c.name}</div>
+
+      ${window.DEMO_MODE ? `<div style="background:rgba(180,83,9,0.15);border:1px solid rgba(180,83,9,0.3);border-radius:10px;padding:10px 14px;font-size:12px;color:#fbbf24;margin-bottom:16px">Demo mode — connect Supabase to save real changes</div>` : ''}
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="lp-field" style="grid-column:1/-1">
+          <label style="display:block;font-size:11.5px;font-weight:600;color:var(--text-secondary);margin-bottom:5px">Business Name</label>
+          <input id="edit-client-name" type="text" value="${(c.name||'').replace(/"/g,'&quot;')}"
+            style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 13px;font-size:13px;color:var(--text-primary);outline:none;box-sizing:border-box" />
+        </div>
+        <div class="lp-field">
+          <label style="display:block;font-size:11.5px;font-weight:600;color:var(--text-secondary);margin-bottom:5px">Contact Name</label>
+          <input id="edit-client-contact" type="text" value="${(c.contact||'').replace(/"/g,'&quot;')}"
+            style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 13px;font-size:13px;color:var(--text-primary);outline:none;box-sizing:border-box" />
+        </div>
+        <div class="lp-field">
+          <label style="display:block;font-size:11.5px;font-weight:600;color:var(--text-secondary);margin-bottom:5px">Contact Email</label>
+          <input id="edit-client-email" type="email" value="${(c.email||'').replace(/"/g,'&quot;')}"
+            style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 13px;font-size:13px;color:var(--text-primary);outline:none;box-sizing:border-box" />
+        </div>
+        <div class="lp-field">
+          <label style="display:block;font-size:11.5px;font-weight:600;color:var(--text-secondary);margin-bottom:5px">Status</label>
+          <select id="edit-client-status"
+            style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 13px;font-size:13px;color:var(--text-primary);outline:none;box-sizing:border-box">
+            <option value="active"  ${c.status==='active' ?'selected':''}>Active</option>
+            <option value="paused"  ${c.status==='paused' ?'selected':''}>Paused</option>
+          </select>
+        </div>
+        <div class="lp-field">
+          <label style="display:block;font-size:11.5px;font-weight:600;color:var(--text-secondary);margin-bottom:5px">Plan</label>
+          <select id="edit-client-plan"
+            style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 13px;font-size:13px;color:var(--text-primary);outline:none;box-sizing:border-box">
+            <option value="Starter"      ${c.plan==='Starter'     ?'selected':''}>Starter</option>
+            <option value="Growth"       ${c.plan==='Growth'      ?'selected':''}>Growth</option>
+            <option value="Professional" ${c.plan==='Professional'?'selected':''}>Professional</option>
+            <option value="Enterprise"   ${c.plan==='Enterprise'  ?'selected':''}>Enterprise</option>
+          </select>
+        </div>
+        <div class="lp-field">
+          <label style="display:block;font-size:11.5px;font-weight:600;color:var(--text-secondary);margin-bottom:5px">Minutes Included</label>
+          <input id="edit-client-minutes" type="number" min="0" value="${c.minutesIncluded||0}"
+            style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 13px;font-size:13px;color:var(--text-primary);outline:none;box-sizing:border-box" />
+        </div>
+        <div class="lp-field">
+          <label style="display:block;font-size:11.5px;font-weight:600;color:var(--text-secondary);margin-bottom:5px">Price per Min ($/min)</label>
+          <input id="edit-client-price" type="number" step="0.001" min="0" value="${c.pricePerMin||0}"
+            style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 13px;font-size:13px;color:var(--text-primary);outline:none;box-sizing:border-box" />
+        </div>
+        <div class="lp-field">
+          <label style="display:block;font-size:11.5px;font-weight:600;color:var(--text-secondary);margin-bottom:5px">Cost per Min ($/min)</label>
+          <input id="edit-client-cost" type="number" step="0.001" min="0" value="${c.costPerMin||0}"
+            style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 13px;font-size:13px;color:var(--text-primary);outline:none;box-sizing:border-box" />
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:22px">
+        <button class="topbar-btn ghost" style="flex:1" onclick="closeEditClientModal()">Cancel</button>
+        <button class="topbar-btn primary" style="flex:2" onclick="submitEditClient('${c.id}')">Save Changes</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+window.closeEditClientModal = function() {
+  const overlay = document.getElementById('edit-client-modal');
+  if (!overlay) return;
+  overlay.style.opacity = '0';
+  setTimeout(() => overlay.remove(), 250);
+};
+
+window.submitEditClient = async function(clientId) {
+  if (window.DEMO_MODE) {
+    showToast('Edit client: connect Supabase to save changes (demo mode)');
+    closeEditClientModal();
+    return;
+  }
+  const data = {
+    name:             document.getElementById('edit-client-name')?.value?.trim(),
+    contact_name:     document.getElementById('edit-client-contact')?.value?.trim(),
+    contact_email:    document.getElementById('edit-client-email')?.value?.trim(),
+    status:           document.getElementById('edit-client-status')?.value,
+    plan:             document.getElementById('edit-client-plan')?.value,
+    minutes_included: parseInt(document.getElementById('edit-client-minutes')?.value || '0', 10),
+    price_per_min:    parseFloat(document.getElementById('edit-client-price')?.value || '0'),
+    cost_per_min:     parseFloat(document.getElementById('edit-client-cost')?.value || '0'),
+  };
+  // Remove undefined/empty entries
+  Object.keys(data).forEach(k => { if (data[k] === '' || data[k] === undefined) delete data[k]; });
+
+  try {
+    await API.clients.update(clientId, data);
+    showToast('Client updated successfully');
+    closeEditClientModal();
+    // Refresh the current view
+    const contEl = document.getElementById('page-content');
+    if (contEl) {
+      contEl.innerHTML = loadingSpinner();
+      loadClientDetailView(contEl, clientId);
+    }
+  } catch (err) {
+    showToast('Error: ' + err.message, 'error');
+  }
+};
+
+window.openEditClient = async function(id) {
+  if (window.DEMO_MODE) {
+    showToast('Edit client: connect Supabase to save changes (demo mode)');
+    return;
+  }
+  try {
+    const res = await API.clients.get(id);
+    const c   = normalizeClient(res.data);
+    // Remove any existing modal
+    const existing = document.getElementById('edit-client-modal');
+    if (existing) existing.remove();
+    document.body.insertAdjacentHTML('beforeend', renderEditClientModal(c));
+    requestAnimationFrame(() => {
+      const overlay = document.getElementById('edit-client-modal');
+      const box     = document.getElementById('edit-client-modal-box');
+      if (overlay) overlay.style.opacity = '1';
+      if (box) box.style.transform = 'translateY(0)';
+    });
+  } catch (err) {
+    showToast('Error loading client: ' + err.message, 'error');
+  }
+};
+
 function attachDetailListeners() {
   window.switchDetailTab = (tab, id) => {
     state.clientDetailTab = tab;

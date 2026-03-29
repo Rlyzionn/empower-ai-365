@@ -143,6 +143,7 @@ function buildLayout() {
         ${navItem('dashboard',  'Home',          iconDashboard())}
         ${navItem('clients',    'My Clients',    iconClients(), clientCount)}
         ${navItem('call-logs',  'Call History',  iconPhone())}
+        ${navItem('phones',     'Phone Numbers', iconPhoneNumbers())}
         <div class="sidebar-section-label">Tools</div>
         ${navItem('calculator', 'Pricing Calculator', iconCalc())}
         <div class="sidebar-section-label">Account</div>
@@ -195,6 +196,7 @@ function renderCurrentView() {
     calculator:      { title:'Quote Builder',   sub:'Enter the details and we\'ll show you exactly what to charge and what you\'ll earn' },
     settings:        { title:'My Platform',     sub:'Your brand, your settings, your API connections' },
     wizard:          { title:'Add New Client',  sub:'Answer a few questions and we\'ll set everything up for you' },
+    phones:          { title:'Phone Numbers',   sub:'AI phone numbers registered across all client deployments' },
   };
 
   const meta    = PAGE_META[state.currentView] || { title:'', sub:'' };
@@ -233,6 +235,7 @@ function renderCurrentView() {
 
     case 'client-detail':
       if (actEl) actEl.innerHTML = `
+        <button class="topbar-btn primary" onclick="openEditClient('${state.selectedClientId}')">✏️ Edit Client</button>
         <button class="topbar-btn ghost" onclick="navigate('clients')">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
           Back to My Clients
@@ -272,6 +275,16 @@ function renderCurrentView() {
         <button class="topbar-btn primary" id="save-settings-btn" onclick="handleSaveSettings()">Save Changes</button>`;
       contEl.innerHTML = loadingSpinner();
       loadSettingsView(contEl);
+      break;
+
+    case 'phones':
+      if (actEl) actEl.innerHTML = `
+        <button class="topbar-btn primary" onclick="handleImportPhone()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          + Import Number
+        </button>`;
+      contEl.innerHTML = loadingSpinner();
+      loadPhonesView(contEl);
       break;
   }
 }
@@ -527,11 +540,12 @@ function renderClientDetailLive(client, calls) {
 }
 
 // ── SVG Icons ────────────────────────────────────────────────
-function iconDashboard() { return `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>`; }
-function iconClients()   { return `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`; }
-function iconPhone()     { return `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`; }
-function iconCalc()      { return `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>`; }
-function iconSettings()  { return `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M5.34 18.66l-1.41 1.41M20.49 12H22M2 12H.49M19.07 19.07l-1.41-1.41M5.34 5.34L3.93 3.93M12 20.49V22M12 2V.49"/></svg>`; }
+function iconDashboard()     { return `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>`; }
+function iconClients()       { return `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`; }
+function iconPhone()         { return `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`; }
+function iconPhoneNumbers()  { return `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>`; }
+function iconCalc()          { return `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>`; }
+function iconSettings()      { return `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M5.34 18.66l-1.41 1.41M20.49 12H22M2 12H.49M19.07 19.07l-1.41-1.41M5.34 5.34L3.93 3.93M12 20.49V22M12 2V.49"/></svg>`; }
 
 // ── Globals ──────────────────────────────────────────────────
 window.navigate            = navigate;
@@ -547,6 +561,7 @@ window.normalizeCalls      = normalizeCalls;
 window.loadClientsView     = loadClientsView;
 window.loadClientDetailView= loadClientDetailView;
 window.loadCallLogsView    = loadCallLogsView;
+window.loadPhonesView      = loadPhonesView;
 
 // ── Boot ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {

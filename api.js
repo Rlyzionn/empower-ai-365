@@ -130,6 +130,14 @@ const API = {
     trend: (days = 7) => apiFetch(`/api/analytics/calls/trend?days=${days}`),
   },
 
+  // ── Phone Numbers ────────────────────────────────────────
+  phones: {
+    list: () => apiFetch('/api/retell/phone-numbers'),
+    import: (data) => apiFetch('/api/retell/phone-numbers', { method: 'POST', body: JSON.stringify(data) }),
+    update: (phone, data) => apiFetch(`/api/retell/phone-numbers/${encodeURIComponent(phone)}`, { method: 'PATCH', body: JSON.stringify(data) }),
+    delete: (phone) => apiFetch(`/api/retell/phone-numbers/${encodeURIComponent(phone)}`, { method: 'DELETE' }),
+  },
+
   // ── Settings ─────────────────────────────────────────────
   settings: {
     get:    ()       => apiFetch('/api/settings'),

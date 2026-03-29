@@ -384,10 +384,14 @@ async function startVoiceDemo() {
   }
 
   // ── Check if Retell SDK is available ─────────────────────
-  const RetellSDK = window.RetellWebClient || (window.Retell && window.Retell.RetellWebClient);
+  // UMD bundle exposes: window.retellClientJsSdk.RetellWebClient
+  const RetellSDK =
+    (window.retellClientJsSdk && window.retellClientJsSdk.RetellWebClient) ||
+    window.RetellWebClient ||
+    (window.Retell && window.Retell.RetellWebClient);
   if (!RetellSDK) {
-    setStatus('Demo Mode', 'Voice demo requires a live connection.');
-    if (status) status.innerHTML = '<span class="vm-status-dot"></span> Install complete after Phase 2 deployment';
+    setStatus('Connection Error', 'Voice SDK failed to load — please refresh.');
+    if (status) status.innerHTML = '<span class="vm-status-dot" style="background:var(--red)"></span> SDK not loaded — try refreshing';
     return;
   }
 

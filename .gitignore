@@ -18,3 +18,8 @@ Thumbs.db
 # Editor
 .vscode/
 *.swp
+
+# Sensitive files — keys, tokens, credentials
+backend/db/*.txt
+*.txt
+*.key

@@ -89,23 +89,27 @@ function renderLanding() {
           </button>
         </div>
 
-        <!-- Trust strip (replaces stats) -->
-        <div class="lp-trust-strip">
-          <div class="lp-trust-item">
-            <span class="lp-trust-check">✓</span>
-            <span>20+ qualified leads/month</span>
+        <!-- Trust cards -->
+        <div class="lp-trust-grid">
+          <div class="lp-trust-card">
+            <div class="lp-trust-card-icon">🎯</div>
+            <div class="lp-trust-card-val">20+</div>
+            <div class="lp-trust-card-label">Qualified leads/month</div>
           </div>
-          <div class="lp-trust-item">
-            <span class="lp-trust-check">✓</span>
-            <span>Results in 30 days</span>
+          <div class="lp-trust-card">
+            <div class="lp-trust-card-icon">⚡</div>
+            <div class="lp-trust-card-val">30 days</div>
+            <div class="lp-trust-card-label">To first results</div>
           </div>
-          <div class="lp-trust-item">
-            <span class="lp-trust-check">✓</span>
-            <span>No long-term contracts</span>
+          <div class="lp-trust-card">
+            <div class="lp-trust-card-icon">📈</div>
+            <div class="lp-trust-card-val">3×</div>
+            <div class="lp-trust-card-label">Avg revenue lift</div>
           </div>
-          <div class="lp-trust-item">
-            <span class="lp-trust-check">✓</span>
-            <span>Works across any industry</span>
+          <div class="lp-trust-card">
+            <div class="lp-trust-card-icon">🔓</div>
+            <div class="lp-trust-card-val">No lock-in</div>
+            <div class="lp-trust-card-label">Cancel any time</div>
           </div>
         </div>
 

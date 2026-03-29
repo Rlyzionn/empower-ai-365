@@ -377,6 +377,82 @@ ul, ol { list-style: none; }
   animation: fadeInUp 0.3s ease both;
 }
 
+/* Mobile sidebar toggle */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 199;
+  backdrop-filter: blur(2px);
+}
+.sidebar-overlay.open { display: block; }
+
+.topbar-hamburger {
+  display: none;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 6px 8px;
+  margin-right: 8px;
+}
+.topbar-hamburger svg { display: block; }
+
+@media (max-width: 768px) {
+  .app-layout { grid-template-columns: 1fr; }
+
+  .sidebar {
+    position: fixed;
+    left: -260px;
+    top: 0;
+    height: 100%;
+    z-index: 200;
+    transition: left 0.28s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: none;
+  }
+  .sidebar.open {
+    left: 0;
+    box-shadow: 4px 0 32px rgba(0,0,0,0.5);
+  }
+
+  .topbar-hamburger { display: flex; align-items: center; }
+
+  .main-content { grid-column: 1; min-width: 0; }
+
+  .topbar { padding: 0 16px; }
+
+  .page-content { padding: 16px; }
+
+  /* Stack hero banner on mobile */
+  .hero-banner { flex-direction: column; gap: 16px; }
+  .hero-right { width: 100%; }
+
+  /* Stack col-60-40 */
+  .col-60-40 { grid-template-columns: 1fr !important; }
+
+  /* KPI grid: 2 columns on mobile */
+  .kpi-grid { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* Client cards: single column */
+  .client-card-grid { grid-template-columns: 1fr !important; }
+
+  /* Settings layout: single column */
+  .settings-layout { grid-template-columns: 1fr !important; }
+
+  /* Table: allow horizontal scroll */
+  .table-wrap { overflow-x: auto; }
+
+  /* Wizard: full width */
+  .wizard-wrap { padding: 0; }
+  .wiz-two-col { grid-template-columns: 1fr !important; }
+
+  /* Detail stats: 2x2 grid */
+  .detail-stats-row { grid-template-columns: repeat(2, 1fr) !important; }
+  .two-col { grid-template-columns: 1fr !important; }
+}
+
 /* ============================================================
    CARDS
    ============================================================ */

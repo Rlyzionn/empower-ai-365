@@ -168,8 +168,13 @@ function buildLayout() {
       </div>
     </aside>
 
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
     <main class="main-content">
       <header class="topbar">
+        <button class="topbar-hamburger" onclick="toggleSidebar()" aria-label="Menu">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
         <div class="topbar-title" id="topbar-title"></div>
         <div class="topbar-actions" id="topbar-actions"></div>
       </header>
@@ -235,6 +240,7 @@ function renderCurrentView() {
 
     case 'client-detail':
       if (actEl) actEl.innerHTML = `
+        <button class="topbar-btn ghost" onclick="handleDeleteClient('${state.selectedClientId}')" style="color:#ef4444;border-color:rgba(239,68,68,0.25)">🗑 Delete</button>
         <button class="topbar-btn primary" onclick="openEditClient('${state.selectedClientId}')">✏️ Edit Client</button>
         <button class="topbar-btn ghost" onclick="navigate('clients')">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -562,6 +568,25 @@ window.loadClientsView     = loadClientsView;
 window.loadClientDetailView= loadClientDetailView;
 window.loadCallLogsView    = loadCallLogsView;
 window.loadPhonesView      = loadPhonesView;
+
+window.toggleSidebar = function() {
+  const sidebar  = document.getElementById('sidebar');
+  const overlay  = document.getElementById('sidebar-overlay');
+  if (!sidebar) return;
+  const isOpen = sidebar.classList.contains('open');
+  sidebar.classList.toggle('open', !isOpen);
+  if (overlay) overlay.classList.toggle('open', !isOpen);
+};
+
+// Auto-close sidebar on navigate (mobile)
+const _origNavigate = window.navigate;
+window.navigate = function(view, params) {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  if (sidebar) sidebar.classList.remove('open');
+  if (overlay) overlay.classList.remove('open');
+  _origNavigate(view, params);
+};
 
 // ── Boot ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {

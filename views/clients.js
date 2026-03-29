@@ -4,6 +4,22 @@
 //  Live mode: state.liveClients (loaded by app.js)
 // ============================================================
 
+window.handleDeleteClient = async function(id) {
+  if (!confirm('Are you sure you want to delete this client? This cannot be undone.')) return;
+  if (window.DEMO_MODE) {
+    showToast('Demo mode — connect Supabase to delete clients.');
+    return;
+  }
+  try {
+    await API.clients.delete(id);
+    showToast('✅ Client deleted.');
+    state.liveClients = null;
+    navigate('clients');
+  } catch (err) {
+    showToast('❌ ' + err.message, 'error');
+  }
+};
+
 // Returns the correct client list for the current mode
 function _getClients() {
   return (window.DEMO_MODE || !state.liveClients) ? MOCK_CLIENTS : state.liveClients;
@@ -218,6 +234,7 @@ function renderClientDetailWithData(c, calls) {
       {id:'overview', label:'📊 Overview'},
       {id:'calls',    label:'📞 Call History'},
       {id:'config',   label:'⚙️ Setup & Pricing'},
+      ...(c.layer === 'self-hosted' ? [{id:'setup', label:'🖥️ Direct Deploy Setup'}] : []),
     ].map(t => `<div class="tab-nav-item ${tab===t.id?'active':''}" onclick="switchDetailTab('${t.id}','${c.id}')">${t.label}</div>`).join('')}
   </div>
 
@@ -225,6 +242,7 @@ function renderClientDetailWithData(c, calls) {
     ${tab==='overview' ? renderDetailOverview(c, calls) : ''}
     ${tab==='calls'    ? renderDetailCalls(calls) : ''}
     ${tab==='config'   ? renderDetailConfig(c) : ''}
+    ${tab==='setup' && c.layer==='self-hosted' ? renderDirectDeploySetup(c) : ''}
   </div>`;
 }
 
@@ -454,6 +472,103 @@ window.openEditClient = async function(id) {
   }
 };
 
+function renderDirectDeploySetup(c) {
+  const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3001'
+    : window.location.origin;
+  const webhookUrl = `${apiBase}/api/webhooks/pipecat/${c.id}`;
+  const retellId   = c.retellAgentId || '(not assigned)';
+
+  return `
+  <div class="two-col" style="margin-top:4px">
+
+    <!-- Webhook Config -->
+    <div class="card">
+      <div class="card-header"><span class="card-title">PIPECAT WEBHOOK CONFIG</span></div>
+      <div class="card-body">
+        <div style="margin-bottom:14px;padding:12px 14px;background:rgba(34,211,238,0.06);border:1px solid rgba(34,211,238,0.15);border-radius:10px;font-size:12.5px;color:var(--text-secondary);line-height:1.7">
+          Set this URL as your Pipecat pipeline's <strong style="color:var(--cyan)">on_call_end</strong> webhook.
+          After every call, your Pipecat instance posts the call data here and it appears in Call History automatically.
+        </div>
+        ${configRow('Client Webhook URL', `
+          <div style="display:flex;align-items:center;gap:8px">
+            <code style="font-size:11px;color:var(--accent-light);word-break:break-all">${webhookUrl}</code>
+            <button class="btn-secondary" style="font-size:11px;padding:4px 8px;flex-shrink:0" onclick="navigator.clipboard.writeText('${webhookUrl}').then(()=>showToast('Copied!'))">Copy</button>
+          </div>`)}
+        ${configRow('Client ID', `<code style="font-size:11px;color:var(--text-muted)">${c.id}</code>`)}
+        ${configRow('Expected payload', `<code style="font-size:11px;color:var(--text-muted)">JSON — see format below</code>`)}
+      </div>
+    </div>
+
+    <!-- Retell info -->
+    <div class="card">
+      <div class="card-header"><span class="card-title">RETELL AGENT LINK</span></div>
+      <div class="card-body">
+        <div style="margin-bottom:14px;padding:12px 14px;background:rgba(124,106,255,0.06);border:1px solid rgba(124,106,255,0.15);border-radius:10px;font-size:12.5px;color:var(--text-secondary);line-height:1.7">
+          If this client uses a Retell phone number on the Direct Deploy layer, link it to a Retell agent ID here so inbound calls route correctly.
+        </div>
+        ${configRow('Retell Agent ID', retellId !== '(not assigned)'
+          ? `<code style="font-size:11px;color:var(--accent-light)">${retellId}</code>`
+          : `<span style="color:var(--text-muted);font-size:12px">Not set — <a onclick="openEditClient('${c.id}')" style="color:var(--accent-light);cursor:pointer">Edit client</a> to assign</span>`
+        )}
+        ${configRow('Layer', `<span class="badge badge-selfhosted badge-dot">Direct Deploy</span>`)}
+        ${configRow('AI Model', c.aiModel || 'GPT-4o')}
+        ${configRow('TTS Voice', c.voiceModel || 'Cartesia Sonic')}
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Pipecat payload format -->
+  <div class="card" style="margin-top:20px">
+    <div class="card-header">
+      <span class="card-title">EXPECTED PIPECAT PAYLOAD FORMAT</span>
+      <button class="topbar-btn ghost" style="font-size:11px;padding:5px 10px" onclick="navigator.clipboard.writeText(JSON.stringify({call_id:'uuid',started_at:'ISO-8601',ended_at:'ISO-8601',duration_secs:120,from_number:'+15550001234',transcript:[{role:'user',content:'Hello'},{role:'assistant',content:'Hi there!'}],summary:'Customer called to book appointment',sentiment:'positive',is_lead:true,is_escalation:false,outcome:'Appointment booked'},null,2)).then(()=>showToast('Copied!'))">Copy JSON</button>
+    </div>
+    <div class="card-body">
+      <pre style="font-size:11.5px;color:var(--text-secondary);line-height:1.7;overflow-x:auto;margin:0">{
+  "call_id":       "uuid — unique per call",
+  "started_at":    "2026-03-30T14:00:00Z",
+  "ended_at":      "2026-03-30T14:02:00Z",
+  "duration_secs": 120,
+  "from_number":   "+15550001234",
+  "transcript": [
+    { "role": "user",      "content": "Hello, I need to book an appointment" },
+    { "role": "assistant", "content": "Of course! What date works for you?" }
+  ],
+  "summary":       "Customer called to book appointment — confirmed for Tuesday 3pm",
+  "sentiment":     "positive",   <span style="color:var(--text-muted)">// positive | neutral | negative</span>
+  "is_lead":       true,
+  "is_escalation": false,
+  "outcome":       "Appointment booked"
+}</pre>
+    </div>
+  </div>
+
+  <!-- Quick start guide -->
+  <div class="card" style="margin-top:20px">
+    <div class="card-header"><span class="card-title">QUICK START — DEPLOY YOUR PIPECAT PIPELINE</span></div>
+    <div class="card-body">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        ${[
+          ['1', 'Install Pipecat', 'pip install pipecat-ai[daily,openai,cartesia,deepgram]'],
+          ['2', 'Set your webhook', 'In your pipeline\'s on_call_end handler, POST the JSON above to the webhook URL'],
+          ['3', 'Add Telnyx / Twilio', 'Connect your SIP provider so inbound calls reach your Pipecat bot'],
+          ['4', 'Test it', 'Make a test call — it will appear in Call History within seconds'],
+          ['5', 'Go live', 'Give your client their phone number — AI handles every call from here'],
+        ].map(([n, title, detail]) => `
+          <div style="display:flex;gap:14px;padding:12px 14px;background:var(--bg-surface3);border-radius:10px;border:1px solid var(--border)">
+            <div style="width:24px;height:24px;background:var(--accent-glow);border:1px solid var(--border-accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--accent-light);flex-shrink:0">${n}</div>
+            <div>
+              <div style="font-weight:600;font-size:13px;margin-bottom:3px">${title}</div>
+              <div style="font-size:12px;color:var(--text-muted)">${detail}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
 function attachDetailListeners() {
   window.switchDetailTab = (tab, id) => {
     state.clientDetailTab = tab;
@@ -476,6 +591,7 @@ function attachDetailListeners() {
     if (!c) return;
     if (tab==='overview') el.innerHTML = renderDetailOverview(c, calls);
     else if (tab==='calls') el.innerHTML = renderDetailCalls(calls);
+    else if (tab==='setup') el.innerHTML = renderDirectDeploySetup(c);
     else el.innerHTML = renderDetailConfig(c);
     attachCallExpandListeners();
   };

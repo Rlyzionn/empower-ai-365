@@ -78,6 +78,10 @@ function renderLanding() {
             <span class="lp-orb-hint-dot"></span>
             Talk to Empower — Live Demo
           </div>
+          <!-- Ambient voice wave bars -->
+          <div class="lp-voice-wave">
+            ${Array.from({length:28},(_,i)=>`<div class="lp-vw-bar" style="animation-delay:${(i*0.07).toFixed(2)}s;animation-duration:${(1.6+Math.sin(i*0.4)*0.6).toFixed(2)}s;height:${8+Math.sin(i*0.45)*20}px"></div>`).join('')}
+          </div>
         </div>
 
         <!-- CTAs -->

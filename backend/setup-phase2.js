@@ -69,7 +69,7 @@ async function setup() {
   try {
     llm = await retell.createLLM({
       model: 'gpt-4o-mini',
-      system_prompt: `You are Empower, the AI voice assistant for Empower AI 365 — a company that deploys intelligent AI voice agents for businesses across every industry.
+      general_prompt: `You are Empower, the AI voice assistant for Empower AI 365 — a company that deploys intelligent AI voice agents for businesses across every industry.
 
 Your role: Demonstrate the power of AI voice agents by having a real conversation.
 

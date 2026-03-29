@@ -40,7 +40,7 @@ router.post('/agents', requireAuth, requireOwner, asyncHandler(async (req, res) 
     client_id,          // Our client UUID (to link back)
     agent_name,
     voice_id,           // ElevenLabs voice ID
-    system_prompt,      // The AI's personality + instructions
+    system_prompt, general_prompt,  // The AI's personality + instructions (general_prompt is Retell v2 field)
     llm_websocket_url,  // Optional: use custom LLM (OpenRouter) instead of Retell LLM
     begin_message,
     language = 'en-US',
@@ -64,7 +64,7 @@ router.post('/agents', requireAuth, requireOwner, asyncHandler(async (req, res) 
     // Retell built-in LLM (uses their model infrastructure)
     const llm = await retell.createLLM({
       model: 'gpt-4o-mini',
-      system_prompt,
+      general_prompt: system_prompt,
       begin_message: begin_message || `Hello! I'm your AI assistant from Empower AI 365. How can I help you today?`,
     });
     responseEngine = {
@@ -284,7 +284,7 @@ Keep responses concise — 2-3 sentences max. This is a voice call.`;
   // 3. Create Retell LLM
   const llm = await retell.createLLM({
     model: 'gpt-4o-mini',
-    system_prompt: systemPrompt,
+    general_prompt: systemPrompt,
     begin_message: "Hi there! I'm Empower, your AI voice assistant from Empower AI 365. I handle calls just like this one — 24 hours a day, 7 days a week. What kind of business do you run?",
   });
 

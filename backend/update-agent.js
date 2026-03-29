@@ -126,7 +126,7 @@ async function run() {
   console.log('\n2️⃣  Updating LLM system prompt...');
   try {
     await retell.updateLLM(LLM_ID, {
-      system_prompt: SYSTEM_PROMPT,
+      general_prompt: SYSTEM_PROMPT,
       begin_message:  BEGIN_MESSAGE,
       model: 'gemini-2.0-flash',
     });

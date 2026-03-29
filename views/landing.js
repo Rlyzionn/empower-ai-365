@@ -12,6 +12,8 @@ function renderLanding() {
       <div class="lp-bg-glow lp-bg-glow-1"></div>
       <div class="lp-bg-glow lp-bg-glow-2"></div>
       <div class="lp-bg-glow lp-bg-glow-3"></div>
+      <div class="lp-bg-glow lp-bg-glow-4"></div>
+      <div class="lp-bg-glow lp-bg-glow-5"></div>
       <div class="lp-bg-grid"></div>
     </div>
 
@@ -20,10 +22,7 @@ function renderLanding() {
       <div class="lp-nav-inner">
         <div class="lp-nav-logo">
           <div class="lp-nav-logo-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16">
-              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
-              <path d="M19 10v1a7 7 0 0 1-14 0v-1"/>
-            </svg>
+            <img src="images/ai.jpeg" alt="Empower AI 365" style="width:28px;height:28px;border-radius:8px;object-fit:cover">
           </div>
           <span>Empower AI 365</span>
         </div>
@@ -66,12 +65,7 @@ function renderLanding() {
             <div class="lp-orb-ring lp-orb-ring-2"></div>
             <div class="lp-orb-ring lp-orb-ring-3"></div>
             <div class="lp-orb-core">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28">
-                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
-                <path d="M19 10v1a7 7 0 0 1-14 0v-1"/>
-                <line x1="12" y1="18" x2="12" y2="22"/>
-                <line x1="8" y1="22" x2="16" y2="22"/>
-              </svg>
+              <img src="images/ai.jpeg" alt="Empower AI 365" style="width:36px;height:36px;border-radius:12px;object-fit:cover">
             </div>
           </button>
           <div class="lp-orb-hint">
@@ -95,16 +89,26 @@ function renderLanding() {
           </button>
         </div>
 
-        <!-- Stats strip -->
-        <div class="lp-stats" id="lp-stats">
-          <div class="lp-stat"><div class="lp-stat-val">24/7</div><div class="lp-stat-key">Always Active</div></div>
-          <div class="lp-stat-div"></div>
-          <div class="lp-stat"><div class="lp-stat-val">&lt;500ms</div><div class="lp-stat-key">Response Time</div></div>
-          <div class="lp-stat-div"></div>
-          <div class="lp-stat"><div class="lp-stat-val">99.9%</div><div class="lp-stat-key">Uptime SLA</div></div>
-          <div class="lp-stat-div"></div>
-          <div class="lp-stat"><div class="lp-stat-val">$0.05/min</div><div class="lp-stat-key">Starting From</div></div>
+        <!-- Trust strip (replaces stats) -->
+        <div class="lp-trust-strip">
+          <div class="lp-trust-item">
+            <span class="lp-trust-check">✓</span>
+            <span>20+ qualified leads/month</span>
+          </div>
+          <div class="lp-trust-item">
+            <span class="lp-trust-check">✓</span>
+            <span>Results in 30 days</span>
+          </div>
+          <div class="lp-trust-item">
+            <span class="lp-trust-check">✓</span>
+            <span>No long-term contracts</span>
+          </div>
+          <div class="lp-trust-item">
+            <span class="lp-trust-check">✓</span>
+            <span>Works across any industry</span>
+          </div>
         </div>
+
 
       </div>
     </section>
@@ -180,10 +184,7 @@ function renderLanding() {
       <div class="lp-footer-inner">
         <div class="lp-footer-brand">
           <div class="lp-nav-logo-icon" style="width:28px;height:28px">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="14" height="14">
-              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
-              <path d="M19 10v1a7 7 0 0 1-14 0v-1"/>
-            </svg>
+            <img src="images/ai.jpeg" alt="Empower AI 365" style="width:28px;height:28px;border-radius:8px;object-fit:cover">
           </div>
           <span>Empower AI 365</span>
         </div>
@@ -231,43 +232,56 @@ function renderLanding() {
       </div>
     </div>
 
-    <!-- ── Voice Demo Modal ──────────────────────── -->
-    <div class="modal-overlay" id="voice-modal" style="display:none" onclick="closeVoiceModal(event)">
-      <div class="lp-modal voice-modal" onclick="event.stopPropagation()">
+    <!-- Voice Modal — 3D Edition -->
+    <div class="modal-overlay" id="voice-modal" onclick="closeVoiceModal(event)" style="display:none">
+      <div class="voice-modal">
+        <!-- Close -->
         <button class="vm-close-btn" onclick="forceCloseVoiceModal()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
+
+        <!-- Brand tag -->
         <div class="vm-brand-tag">
-          <span class="vm-brand-pulse"></span>
-          Powered by Empower Voice Agent
+          <img src="images/ai.jpeg" alt="Empower AI 365" style="width:18px;height:18px;border-radius:5px;object-fit:cover">
+          Powered by Empower AI
         </div>
-        <div class="vm-orb" id="vm-orb">
-          <div class="vm-ring vm-ring-1"></div>
-          <div class="vm-ring vm-ring-2"></div>
-          <div class="vm-ring vm-ring-3"></div>
-          <div class="vm-ring vm-ring-4"></div>
-          <div class="vm-core">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="30" height="30">
-              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
-              <path d="M19 10v1a7 7 0 0 1-14 0v-1"/>
-              <line x1="12" y1="18" x2="12" y2="22"/>
-              <line x1="8" y1="22" x2="16" y2="22"/>
-            </svg>
+
+        <!-- 3D orb scene -->
+        <div class="vm-3d-scene" id="vm-scene">
+          <div class="vm-3d-sphere" id="vm-sphere">
+            <div class="vm-sphere-inner"></div>
+            <div class="vm-sphere-ring vm-ring-1"></div>
+            <div class="vm-sphere-ring vm-ring-2"></div>
+            <div class="vm-sphere-ring vm-ring-3"></div>
+            <div class="vm-sphere-glow"></div>
           </div>
+          <!-- Floating particles -->
+          <div class="vm-particle vm-p1"></div>
+          <div class="vm-particle vm-p2"></div>
+          <div class="vm-particle vm-p3"></div>
+          <div class="vm-particle vm-p4"></div>
+          <div class="vm-particle vm-p5"></div>
+          <div class="vm-particle vm-p6"></div>
         </div>
-        <h3 class="vm-title" id="vm-title">Empower AI</h3>
-        <p class="vm-sub" id="vm-sub">Initializing voice session…</p>
-        <div class="vm-waveform" id="vm-waveform">
-          ${Array.from({length:32},(_,i)=>`<div class="wf-bar" style="animation-delay:${(i*0.05).toFixed(2)}s;height:${6+Math.sin(i*0.5)*16}px"></div>`).join('')}
-        </div>
+
+        <!-- Status -->
         <div class="vm-status" id="vm-status">
-          <span class="vm-status-dot"></span>
-          <span id="vm-status-text">Connecting to Empower Voice Agent…</span>
+          <div class="vm-status-dot" id="vm-dot"></div>
+          <span id="vm-status-text">Connecting to Empower AI…</span>
         </div>
-        <button class="vm-end-btn" id="vm-end-btn" onclick="forceCloseVoiceModal()" style="display:none">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45c.98.37 2.05.6 3.14.6a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2C8.95 22 2 15.05 2 6.5a2 2 0 0 1 2-2H7a2 2 0 0 1 2 2c0 1.1.23 2.16.6 3.14a2 2 0 0 1-.45 2.11L8.68 12.9"/></svg>
+
+        <!-- Wave bars (active call) -->
+        <div class="vm-wave-bars" id="vm-wave-bars">
+          ${Array.from({length:16},(_,i)=>`<div class="vm-bar" style="animation-delay:${(i*0.08).toFixed(2)}s"></div>`).join('')}
+        </div>
+
+        <!-- End call button -->
+        <button class="vm-end-btn" id="vm-end-btn" style="display:none" onclick="forceCloseVoiceModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45c.96.38 1.98.62 3.03.7a2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07A19.42 19.42 0 0 1 4.26 9.91a19.8 19.8 0 0 1-3.07-8.63A2 2 0 0 1 3.18 1h3a2 2 0 0 1 2 1.72c.09 1.05.33 2.08.7 3.04a2 2 0 0 1-.44 2.11L7.18 9.04"/><line x1="23" y1="1" x2="1" y2="23"/></svg>
           End Call
         </button>
+
+        <div class="vm-hint" id="vm-hint">Speak naturally — Empower is listening</div>
       </div>
     </div>
 
@@ -382,16 +396,11 @@ async function startVoiceDemo() {
   m.style.display = 'flex';
   requestAnimationFrame(() => m.classList.add('modal-visible'));
 
-  const title  = document.getElementById('vm-title');
-  const sub    = document.getElementById('vm-sub');
   const status = document.getElementById('vm-status');
-  const orb    = document.getElementById('vm-orb');
-  const wf     = document.querySelector('.vm-waveform');
-  if (orb) orb.classList.add('vm-orb-active');
 
   function setStatus(t, s) {
-    if (title)  title.textContent = t;
-    if (sub)    sub.textContent   = s;
+    const statusText = document.getElementById('vm-status-text');
+    if (statusText) statusText.textContent = t + (s ? ' — ' + s : '');
   }
 
   // ── Load Retell SDK on demand via esm.sh (handles all deps) ─
@@ -433,20 +442,26 @@ async function startVoiceDemo() {
 
     _retellClient.on('call_started',  () => {
       _callActive = true;
-      setStatus('Empower', 'Live — speak now');
-      if (wf) wf.classList.add('wf-active');
-      if (status) status.innerHTML = '<span class="vm-status-dot" style="background:#22c55e;animation:pulse 1s infinite"></span><span>Live · Powered by Empower Voice Agent</span>';
+      const modal = document.getElementById('voice-modal');
+      if (modal) modal.classList.add('active');
       const endBtn = document.getElementById('vm-end-btn');
       if (endBtn) endBtn.style.display = 'flex';
+      const hintEl = document.getElementById('vm-hint');
+      if (hintEl) hintEl.style.display = 'none';
+      const statusText = document.getElementById('vm-status-text');
+      if (statusText) statusText.textContent = 'Empower is live — speak now';
     });
 
     _retellClient.on('call_ended', () => {
       _callActive = false;
-      setStatus('Call Ended', 'Thanks for trying Empower AI 365!');
-      if (orb) orb.classList.remove('vm-orb-active');
-      if (wf) wf.classList.remove('wf-active');
+      const modal = document.getElementById('voice-modal');
+      if (modal) modal.classList.remove('active');
       const endBtn = document.getElementById('vm-end-btn');
       if (endBtn) endBtn.style.display = 'none';
+      const hintEl = document.getElementById('vm-hint');
+      if (hintEl) hintEl.style.display = 'block';
+      const statusText = document.getElementById('vm-status-text');
+      if (statusText) statusText.textContent = 'Call ended — thanks for trying Empower AI!';
     });
 
     _retellClient.on('error', (err) => {
@@ -472,16 +487,13 @@ function _doCloseVoiceModal() {
   const m = document.getElementById('voice-modal');
   if (!m) return;
   m.classList.remove('modal-visible');
-  document.getElementById('vm-orb')?.classList.remove('vm-orb-active');
-  document.getElementById('vm-waveform')?.classList.remove('wf-active');
+  m.classList.remove('active');
   const endBtn = document.getElementById('vm-end-btn');
   if (endBtn) endBtn.style.display = 'none';
-  const title = document.getElementById('vm-title');
-  const sub   = document.getElementById('vm-sub');
-  if (title) title.textContent = 'Empower AI';
-  if (sub)   sub.textContent   = 'Initializing voice session…';
-  if (document.getElementById('vm-status'))
-    document.getElementById('vm-status').innerHTML = '<span class="vm-status-dot"></span><span>Connecting to Empower Voice Agent…</span>';
+  const hintEl = document.getElementById('vm-hint');
+  if (hintEl) hintEl.style.display = 'block';
+  const statusText = document.getElementById('vm-status-text');
+  if (statusText) statusText.textContent = 'Connecting to Empower AI…';
   setTimeout(() => { m.style.display = 'none'; }, 300);
 }
 

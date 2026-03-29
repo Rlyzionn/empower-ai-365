@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pdftotext /c/Users/rlyzion/Desktop/Proj/TechVera_Proposal_Final.pdf -)",
+      "Bash(export PATH=\"/c/Users/rlyzion/AppData/Local/ms-playwright-go/1.50.1:$PATH\")",
+      "Bash(npm install:*)",
+      "Read(//c//**)",
+      "Bash(find /c/Users/rlyzion/AppData/Local/Programs -maxdepth 3 -name npm*)",
+      "Bash(node -e \"const {execSync}=require\\(''child_process''\\); console.log\\(execSync\\(''where npm 2>&1''\\).toString\\(\\)\\)\")",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(cmd.exe /c \"where npx 2>&1\")",
+      "Bash(powershell.exe -Command \"Get-Command npx -ErrorAction SilentlyContinue | Select-Object Source\")",
+      "Bash(powershell.exe -Command \"Get-ChildItem ''C:\\\\Program Files\\\\nodejs'' -ErrorAction SilentlyContinue | Select-Object Name\")",
+      "Bash(powershell.exe -Command \"Get-ChildItem ''C:\\\\Users\\\\rlyzion\\\\AppData\\\\Roaming\\\\npm'' -ErrorAction SilentlyContinue | Select-Object Name\")",
+      "Bash(node -e \":*)",
+      "Bash(powershell.exe -Command \"Set-Location ''C:\\\\Users\\\\rlyzion\\\\Desktop\\\\Proj\\\\backend''; & ''C:\\\\Program Files\\\\nodejs\\\\npm.cmd'' install ws --save 2>&1\")",
+      "Bash(node setup-phase2.js)",
+      "Bash(powershell.exe -Command \"Get-NetTCPConnection -LocalPort 3001 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess | Sort-Object -Unique | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue; Write-Host \"\"Killed PID $_\"\" }\")",
+      "Bash(powershell.exe -Command \"Get-NetTCPConnection -LocalPort 3001 -State Listen -ErrorAction SilentlyContinue | Select-Object LocalPort,State,OwningProcess\")",
+      "Bash(powershell.exe -Command \"Start-Process -FilePath ''C:\\\\Program Files\\\\nodejs\\\\node.exe'' -ArgumentList ''C:\\\\Users\\\\rlyzion\\\\Desktop\\\\Proj\\\\serve.js'' -WindowStyle Normal\")",
+      "Bash(powershell.exe -Command \"Start-Sleep -Seconds 2; try { $r = Invoke-WebRequest -Uri ''http://localhost:3000'' -TimeoutSec 3 -UseBasicParsing; Write-Host ''Status:'' $r.StatusCode; Write-Host ''Length:'' $r.Content.Length } catch { Write-Host ''Error:'' $_Exception.Message }\")",
+      "Bash(powershell.exe -Command \"Start-Sleep -Seconds 1; Invoke-WebRequest -Uri ''http://localhost:3000'' -TimeoutSec 5 -UseBasicParsing | Select-Object StatusCode, @{N=''Len'';E={$_Content.Length}}\")",
+      "Bash(powershell.exe -Command \"Invoke-WebRequest -Uri ''http://localhost:3000/index.html'' -UseBasicParsing | Select-Object StatusCode, @{N=''Bytes'';E={$_RawContentLength}}\")",
+      "Bash(powershell.exe -Command \"\\(Invoke-WebRequest -Uri ''http://localhost:3000/index.html'' -UseBasicParsing\\).Content.Substring\\(0,200\\)\")",
+      "Bash(powershell.exe -Command \":*)",
+      "Bash(powershell.exe -Command \"$headers = @{''Content-Type''=''application/json'';''Origin''=''http://localhost:3000''}; $body = ''{\"\"metadata\"\":{\"\"source\"\":\"\"landing_demo\"\"}}''; $r = Invoke-WebRequest -Uri ''http://localhost:3001/api/retell/web-call'' -Method POST -Headers $headers -Body $body -UseBasicParsing; Write-Host $r.StatusCode; Write-Host $r.Content\")",
+      "Bash(\"C:\\\\Program Files\\\\nodejs\\\\node.exe\" -e \"fetch\\(''http://localhost:3001/api/retell/web-call'',{method:''POST'',headers:{''Content-Type'':''application/json'',''Origin'':''http://localhost:3000''},body:JSON.stringify\\({metadata:{source:''test''}}\\)}\\).then\\(r=>r.json\\(\\)\\).then\\(d=>console.log\\(''status:ok access_token:'',d.access_token?''present'':''MISSING'',''call_id:'',d.call_id||d.error\\)\\).catch\\(e=>console.error\\(''ERR:'',e.message\\)\\)\")"
+    ]
+  }
+}

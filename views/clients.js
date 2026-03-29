@@ -1,0 +1,348 @@
+// ============================================================
+//  VOICEDESK — CLIENTS VIEW
+//  Demo mode: MOCK_CLIENTS
+//  Live mode: state.liveClients (loaded by app.js)
+// ============================================================
+
+// Returns the correct client list for the current mode
+function _getClients() {
+  return (window.DEMO_MODE || !state.liveClients) ? MOCK_CLIENTS : state.liveClients;
+}
+
+function renderClients() {
+  const clients = _getClients();
+  const search  = state.clientFilter.toLowerCase();
+  const layerF  = state.clientLayerFilter;
+
+  const filtered = clients.filter(c => {
+    const matchSearch = !search ||
+      (c.name||'').toLowerCase().includes(search) ||
+      (c.contact||'').toLowerCase().includes(search) ||
+      (c.industry||'').toLowerCase().includes(search);
+    const matchLayer  = layerF === 'all' || c.layer === layerF;
+    return matchSearch && matchLayer;
+  });
+
+  return `
+  <div class="toolbar">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="client-search" class="search-input" placeholder="Search by name, industry, or contact…" value="${state.clientFilter}" oninput="handleClientSearch(this.value)" />
+    </div>
+    <select class="filter-select" onchange="handleLayerFilter(this.value)">
+      <option value="all" ${state.clientLayerFilter==='all'?'selected':''}>All Plan Types</option>
+      <option value="managed"     ${state.clientLayerFilter==='managed'?'selected':''}>⚡ Cloud Managed only</option>
+      <option value="self-hosted" ${state.clientLayerFilter==='self-hosted'?'selected':''}>🖥️ Direct Deploy only</option>
+    </select>
+  </div>
+
+  ${filtered.length === 0
+    ? `<div class="empty-state">
+        <div class="empty-icon">🔍</div>
+        <div class="empty-title">No clients found</div>
+        <div class="empty-sub">Try a different search or filter</div>
+      </div>`
+    : state.clientViewMode === 'cards'
+      ? renderClientCards(filtered)
+      : renderClientTable(filtered)}`;
+}
+
+// ── Card Grid ─────────────────────────────────────────────────
+function renderClientCards(clients) {
+  return `<div class="client-card-grid">
+    ${clients.map(c => {
+      const p = pct(c.minutesUsed||0, c.minutesIncluded||1);
+      const barClass = p < 65 ? 'low' : p < 85 ? 'mid' : 'high';
+      const margin = calcMargin(c.costPerMin, c.pricePerMin);
+      const compliance = (c.compliance||[]).length > 0;
+      return `
+      <div class="client-card" onclick="navigate('client-detail',{clientId:'${c.id}'})">
+        <div class="client-card-top">
+          <div class="client-avatar" style="background:${c.avatarColor};width:48px;height:48px;border-radius:14px;font-size:15px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;flex-shrink:0">${c.avatar}</div>
+          <div style="flex:1;min-width:0">
+            <div class="client-card-name">${c.name}</div>
+            <div class="client-card-industry">${c.industry||''}</div>
+          </div>
+          <span class="badge badge-${c.status||'active'} badge-dot" style="flex-shrink:0">${(c.status||'active').charAt(0).toUpperCase()+(c.status||'active').slice(1)}</span>
+        </div>
+
+        <div class="client-card-layer-row">
+          ${layerBadge(c.layer)}
+          ${compliance ? `<span class="badge badge-soc2">🔒 Compliant</span>` : ''}
+        </div>
+
+        <div class="client-card-stats">
+          <div class="client-card-stat">
+            <div class="client-card-stat-val">${fmtMoney(c.monthlyRevenue||0)}</div>
+            <div class="client-card-stat-label">Monthly</div>
+          </div>
+          <div class="client-card-stat-divider"></div>
+          <div class="client-card-stat">
+            <div class="client-card-stat-val" style="color:${margin>40?'var(--green)':'var(--amber)'}">${margin}%</div>
+            <div class="client-card-stat-label">Your margin</div>
+          </div>
+          <div class="client-card-stat-divider"></div>
+          <div class="client-card-stat">
+            <div class="client-card-stat-val">${fmtNum(c.totalCalls||0)}</div>
+            <div class="client-card-stat-label">Calls total</div>
+          </div>
+        </div>
+
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-muted);margin-bottom:6px">
+            <span>Minutes used this month</span>
+            <span style="font-weight:600;color:${p>85?'var(--red)':p>65?'var(--amber)':'var(--green)'}">${p}%</span>
+          </div>
+          <div class="usage-bar-track" style="height:6px"><div class="usage-bar-fill ${barClass}" style="width:${p}%"></div></div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px">${fmtNum(c.minutesUsed||0)} of ${fmtNum(c.minutesIncluded||0)} minutes · ${c.plan} Plan</div>
+        </div>
+
+        <div class="client-card-footer">
+          <span style="font-size:11.5px;color:var(--text-muted)">📍 ${c.location||''}</span>
+          <span style="font-size:11.5px;color:var(--accent-light);font-weight:600">View details →</span>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+// ── Table View ────────────────────────────────────────────────
+function renderClientTable(clients) {
+  return `
+  <div class="card">
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Client</th><th>Plan Type</th><th>Plan</th>
+          <th>Minutes Used</th><th>Earns You</th><th>Your Margin</th><th>Status</th>
+        </tr></thead>
+        <tbody>
+          ${clients.map(c => {
+            const p = pct(c.minutesUsed||0, c.minutesIncluded||1);
+            const barClass = p < 65 ? 'low' : p < 85 ? 'mid' : 'high';
+            const margin = calcMargin(c.costPerMin, c.pricePerMin);
+            return `<tr onclick="navigate('client-detail',{clientId:'${c.id}'})">
+              <td>
+                <div class="client-cell">
+                  <div class="client-avatar" style="background:${c.avatarColor}">${c.avatar}</div>
+                  <div>
+                    <div class="td-primary" style="font-size:13.5px">${c.name}</div>
+                    <div style="font-size:11px;color:var(--text-muted)">${c.contact||''} · ${c.location||''}</div>
+                  </div>
+                </div>
+              </td>
+              <td>${layerBadge(c.layer)}</td>
+              <td style="color:var(--text-primary);font-weight:600">${c.plan}</td>
+              <td>
+                <div class="usage-wrap">
+                  <div class="usage-bar-track"><div class="usage-bar-fill ${barClass}" style="width:${p}%"></div></div>
+                  <span class="usage-pct" style="font-size:11px;min-width:80px">${fmtNum(c.minutesUsed||0)} / ${fmtNum(c.minutesIncluded||0)}</span>
+                </div>
+              </td>
+              <td class="td-primary">${fmtMoney(c.monthlyRevenue||0)}/mo</td>
+              <td style="color:${margin>40?'var(--green)':margin>30?'var(--amber)':'var(--text-secondary)'};font-weight:700">${margin}%</td>
+              <td><span class="badge badge-${c.status||'active'} badge-dot">${(c.status||'active').charAt(0).toUpperCase()+(c.status||'active').slice(1)}</span></td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+function attachClientListeners() {
+  window.handleClientSearch = (val) => {
+    state.clientFilter = val;
+    const c = document.getElementById('page-content');
+    if (c) { c.innerHTML = renderClients(); attachClientListeners(); }
+  };
+  window.handleLayerFilter = (val) => {
+    state.clientLayerFilter = val;
+    const c = document.getElementById('page-content');
+    if (c) { c.innerHTML = renderClients(); attachClientListeners(); }
+  };
+}
+
+// ── Client Detail ─────────────────────────────────────────────
+// Called in demo mode (uses MOCK data)
+function renderClientDetail(id) {
+  const c = MOCK_CLIENTS.find(x => x.id === id);
+  if (!c) return `<div class="empty-state"><div class="empty-icon">❓</div><div class="empty-title">Client not found</div></div>`;
+  const calls = MOCK_CALL_LOGS.filter(l => l.clientId === id);
+  return renderClientDetailWithData(c, calls);
+}
+
+// Called in live mode (uses API data passed directly)
+function renderClientDetailWithData(c, calls) {
+  const margin = calcMargin(c.costPerMin, c.pricePerMin);
+  const p = pct(c.minutesUsed||0, c.minutesIncluded||1);
+  const barClass = p < 65 ? 'low' : p < 85 ? 'mid' : 'high';
+  const tab = state.clientDetailTab || 'overview';
+
+  return `
+  <div class="detail-hero">
+    <div class="detail-hero-left">
+      <div class="detail-big-avatar" style="background:${c.avatarColor}">${c.avatar}</div>
+      <div>
+        <div class="detail-name">${c.name}</div>
+        <div class="detail-meta">
+          ${layerBadge(c.layer)}
+          <span class="badge badge-${c.status||'active'} badge-dot">${(c.status||'active').charAt(0).toUpperCase()+(c.status||'active').slice(1)}</span>
+          ${(c.compliance||[]).length > 0 ? `<span class="badge badge-soc2">🔒 Compliance Active</span>` : ''}
+          <span style="font-size:12px;color:var(--text-muted)">📍 ${c.location||''}</span>
+        </div>
+        <div style="margin-top:10px;font-size:12.5px;color:var(--text-muted)">
+          Contact: ${c.contact||''}, ${c.title||''} · <a href="mailto:${c.email||''}" style="color:var(--accent-light)">${c.email||''}</a>
+        </div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:4px">
+          ${c.phoneNumber||''} · Active since ${new Date(c.activeSince||Date.now()).toLocaleDateString('en-US',{month:'long',year:'numeric'})}
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+      <div style="font-size:32px;font-weight:800;letter-spacing:-1px">${fmtMoney(c.monthlyRevenue||0)}<span style="font-size:14px;font-weight:400;color:var(--text-muted)">/mo</span></div>
+      <div style="font-size:13px;color:var(--text-secondary)">${c.plan} Plan · ${fmtMoney(c.pricePerMin||0,3)}/min</div>
+      <div style="font-size:14px;color:${margin>40?'var(--green)':'var(--amber)'};font-weight:700">You keep ${margin}% of every call</div>
+    </div>
+  </div>
+
+  <div class="detail-stats-row">
+    ${detailStat('Total Calls Handled', fmtNum(c.totalCalls||0), 'by your AI, all time')}
+    ${detailStat('Average Call Length', (c.avgCallDuration||0) + ' min', 'per conversation')}
+    ${detailStat('Minutes This Month', `${fmtNum(c.minutesUsed||0)} / ${fmtNum(c.minutesIncluded||0)}`, `${p}% of plan used`)}
+    ${detailStat('You Earn Per Call (avg)', fmtMoney(((c.pricePerMin||0)-(c.costPerMin||0))*(c.avgCallDuration||0),2), 'net profit per call')}
+  </div>
+
+  <div class="tab-nav">
+    ${[
+      {id:'overview', label:'📊 Overview'},
+      {id:'calls',    label:'📞 Call History'},
+      {id:'config',   label:'⚙️ Setup & Pricing'},
+    ].map(t => `<div class="tab-nav-item ${tab===t.id?'active':''}" onclick="switchDetailTab('${t.id}','${c.id}')">${t.label}</div>`).join('')}
+  </div>
+
+  <div id="detail-tab-content">
+    ${tab==='overview' ? renderDetailOverview(c, calls) : ''}
+    ${tab==='calls'    ? renderDetailCalls(calls) : ''}
+    ${tab==='config'   ? renderDetailConfig(c) : ''}
+  </div>`;
+}
+
+function detailStat(label, val, sub) {
+  return `<div class="detail-stat-card">
+    <div class="detail-stat-label">${label}</div>
+    <div class="detail-stat-val">${val}</div>
+    <div class="detail-stat-sub">${sub}</div>
+  </div>`;
+}
+
+function renderDetailOverview(c, calls) {
+  const weeklyData = c.weeklyData || [0,0,0,0,0,0,0];
+  const maxW = Math.max(...weeklyData, 1);
+  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  return `
+  <div class="two-col">
+    <div class="card">
+      <div class="card-header"><span class="card-title">CALLS THIS WEEK</span></div>
+      <div class="card-body">
+        <div style="display:flex;align-items:flex-end;gap:8px;height:90px">
+          ${weeklyData.map((v,i) => {
+            const h = Math.max(10, Math.round((v/maxW)*90));
+            return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px">
+              <div style="font-size:10px;color:var(--text-muted)">${fmtNum(v)}</div>
+              <div style="width:100%;height:${h}px;background:${i===6?'var(--accent)':'rgba(124,106,255,0.25)'};border-radius:5px 5px 0 0;transition:height 0.6s"></div>
+              <div style="font-size:10px;color:var(--text-muted)">${days[i]}</div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">RECENT CALLS</span></div>
+      <div class="card-body" style="padding-top:6px">
+        ${(calls||[]).slice(0,3).map(call => `
+          <div class="activity-item" style="cursor:pointer" onclick="switchDetailTab('calls','${c.id}')">
+            <div class="activity-icon">${call.isEscalation?'🚨':call.isLead?'🎯':'📞'}</div>
+            <div class="activity-body">
+              <div class="activity-text">${call.intent||'Call'}</div>
+              <div class="activity-detail">${call.outcome||''}</div>
+            </div>
+            <span class="badge badge-${call.sentiment||'neutral'}">${(call.sentiment||'neutral').charAt(0).toUpperCase()+(call.sentiment||'neutral').slice(1)}</span>
+          </div>`).join('')}
+        ${(!calls||calls.length===0) ? `<div class="empty-state" style="padding:20px"><div class="empty-icon" style="font-size:30px">📞</div><div class="empty-title" style="font-size:14px">No calls yet</div><div class="empty-sub">Calls will appear here once the AI starts</div></div>` : ''}
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderDetailCalls(calls) {
+  if (!calls || !calls.length) return `<div class="empty-state"><div class="empty-icon">📞</div><div class="empty-title">No calls logged yet</div><div class="empty-sub">Once the AI starts handling calls, full transcripts and summaries will appear here</div></div>`;
+  return calls.map(call => renderCallItem(call)).join('');
+}
+
+function renderDetailConfig(c) {
+  return `
+  <div class="two-col">
+    <div class="card">
+      <div class="card-header"><span class="card-title">HOW THIS CLIENT IS SET UP</span></div>
+      <div class="card-body">
+        ${configRow('Plan Type', layerBadge(c.layer))}
+        ${configRow('AI Voice Quality', `<span style="color:var(--text-primary);font-weight:600">${(c.voiceModel||'').replace('ElevenLabs Premium','🏆 Premium (ElevenLabs)').replace('Cartesia Sonic','✅ Very Good (Cartesia)')}</span>`)}
+        ${configRow('AI Brain', `<span style="color:var(--text-primary);font-weight:600">${c.aiModel||'GPT-4o'}</span>`)}
+        ${configRow('Calendar Connected', c.calendarSystem||'None')}
+        ${configRow('CRM Connected', c.crm||'None')}
+        ${configRow('Languages', (c.languages||['English']).join(', '))}
+        ${configRow('Simultaneous Calls', c.concurrentCalls ? c.concurrentCalls + ' lines included' : 'Unlimited (scales automatically)')}
+        ${(c.compliance||[]).length > 0 ? configRow('Compliance', c.compliance.map(x=>`<span class="badge badge-${x.toLowerCase()}">${x}</span>`).join(' ')) : ''}
+        ${c.retellAgentId ? configRow('Retell Agent ID', `<code style="font-size:11px;color:var(--text-muted)">${c.retellAgentId}</code>`) : ''}
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">YOUR EARNINGS FROM THIS CLIENT</span></div>
+      <div class="card-body">
+        ${configRow('Client\'s Plan', `<span style="font-weight:700;color:var(--text-primary)">${c.plan}</span>`)}
+        ${configRow('Included Minutes', fmtNum(c.minutesIncluded||0) + ' per month')}
+        ${configRow('They Pay Per Minute', fmtMoney(c.pricePerMin||0,3))}
+        ${configRow('Extra Minutes Rate', fmtMoney(c.extraPricePerMin||0,3) + ' per minute')}
+        ${configRow('Your Cost Per Minute', fmtMoney(c.costPerMin||0,3))}
+        ${configRow('Your Profit Per Minute', `<span style="color:var(--green);font-weight:700">${fmtMoney((c.pricePerMin||0)-(c.costPerMin||0),3)}</span>`)}
+        ${configRow('Your Margin', `<span style="color:var(--green);font-weight:800;font-size:15px">${calcMargin(c.costPerMin,c.pricePerMin)}%</span>`)}
+        ${configRow('Monthly Income', `<span style="color:var(--text-primary);font-weight:800;font-size:15px">${fmtMoney(c.monthlyRevenue||0)}/mo</span>`)}
+      </div>
+    </div>
+  </div>`;
+}
+
+function configRow(label, val) {
+  return `<div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px">
+    <span style="color:var(--text-muted)">${label}</span><span style="color:var(--text-secondary)">${val}</span>
+  </div>`;
+}
+
+function attachDetailListeners() {
+  window.switchDetailTab = (tab, id) => {
+    state.clientDetailTab = tab;
+    document.querySelectorAll('.tab-nav-item').forEach(t => {
+      t.classList.toggle('active', t.textContent.trim().toLowerCase().includes(tab));
+    });
+    const el = document.getElementById('detail-tab-content');
+    if (!el) return;
+
+    // Use live data if available, otherwise mock
+    let c, calls;
+    if (!window.DEMO_MODE && state._detailClient && state._detailClient.id === id) {
+      c     = state._detailClient;
+      calls = state._detailCalls || [];
+    } else {
+      c     = MOCK_CLIENTS.find(x => x.id === id);
+      calls = MOCK_CALL_LOGS.filter(l => l.clientId === id);
+    }
+
+    if (!c) return;
+    if (tab==='overview') el.innerHTML = renderDetailOverview(c, calls);
+    else if (tab==='calls') el.innerHTML = renderDetailCalls(calls);
+    else el.innerHTML = renderDetailConfig(c);
+    attachCallExpandListeners();
+  };
+  attachCallExpandListeners();
+}

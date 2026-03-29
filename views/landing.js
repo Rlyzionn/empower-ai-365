@@ -1,149 +1,191 @@
 // ============================================================
 //  EMPOWER AI 365 — Landing Page
-//  VAPI-style design with animated background
+//  Production design — Retell / VAPI / AntiGravity inspired
 // ============================================================
 
 function renderLanding() {
   return `
-  <div class="landing" id="landing-page">
-    <canvas id="landing-canvas" class="landing-canvas"></canvas>
+  <div class="lp" id="landing-page">
 
-    <div class="landing-orbs">
-      <div class="lorb lorb-1"></div>
-      <div class="lorb lorb-2"></div>
-      <div class="lorb lorb-3"></div>
+    <!-- Background layers -->
+    <div class="lp-bg">
+      <div class="lp-bg-glow lp-bg-glow-1"></div>
+      <div class="lp-bg-glow lp-bg-glow-2"></div>
+      <div class="lp-bg-glow lp-bg-glow-3"></div>
+      <div class="lp-bg-grid"></div>
     </div>
 
     <!-- Nav -->
-    <nav class="landing-nav">
-      <div class="landing-brand">
-        <div class="landing-brand-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="18" height="18">
-            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
-            <path d="M19 10v1a7 7 0 0 1-14 0v-1"/>
-            <line x1="12" y1="18" x2="12" y2="22"/>
-            <line x1="8" y1="22" x2="16" y2="22"/>
-          </svg>
+    <nav class="lp-nav" id="lp-nav">
+      <div class="lp-nav-inner">
+        <div class="lp-nav-logo">
+          <div class="lp-nav-logo-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
+              <path d="M19 10v1a7 7 0 0 1-14 0v-1"/>
+            </svg>
+          </div>
+          <span>Empower AI 365</span>
         </div>
-        <span class="landing-brand-name">Empower AI 365</span>
-      </div>
-      <div class="landing-nav-links">
-        <a href="#" class="landing-nav-link" onclick="smoothScrollTo('features')">Features</a>
-        <a href="#" class="landing-nav-link" onclick="smoothScrollTo('metrics-row')">Pricing</a>
-        <button class="landing-nav-btn" onclick="showLoginModal()">
-          Dashboard
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </button>
+        <div class="lp-nav-links">
+          <a href="#" class="lp-nav-link" onclick="smoothScrollTo('lp-features')">Product</a>
+          <a href="#" class="lp-nav-link" onclick="smoothScrollTo('lp-features')">Use Cases</a>
+          <a href="#" class="lp-nav-link" onclick="smoothScrollTo('lp-stats')">Pricing</a>
+        </div>
+        <div class="lp-nav-actions">
+          <button class="lp-nav-ghost" onclick="showLoginModal()">Sign in</button>
+          <button class="lp-nav-cta" onclick="showGetAgentModal()">Get Started</button>
+        </div>
       </div>
     </nav>
 
     <!-- Hero -->
-    <section class="landing-hero">
-      <div class="landing-eyebrow">
-        <span class="eyebrow-pulse"></span>
-        AI Voice Technology · Powered by Empower AI 365
-      </div>
+    <section class="lp-hero">
+      <div class="lp-hero-inner">
 
-      <h1 class="landing-h1">
-        Voice Agents That<br>
-        <span class="h1-gradient">Work While You Sleep</span>
-      </h1>
+        <div class="lp-tag">
+          <span class="lp-tag-dot"></span>
+          Live AI Voice · Powered by Empower
+        </div>
 
-      <p class="landing-sub">
-        Deploy intelligent AI voice agents for your business in days, not months.<br>
-        Handle every call, qualify leads, and delight customers — around the clock.
-      </p>
+        <h1 class="lp-h1">
+          The Voice Agent<br>
+          <span class="lp-h1-em">Your Business Needs</span>
+        </h1>
 
-      <!-- Voice Demo Orb -->
-      <div class="vd-orb-wrap">
-        <div class="vd-orb" id="vd-orb" onclick="startVoiceDemo()">
-          <div class="vd-ring vd-ring-1"></div>
-          <div class="vd-ring vd-ring-2"></div>
-          <div class="vd-ring vd-ring-3"></div>
-          <div class="vd-ring vd-ring-4"></div>
-          <div class="vd-core">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="30" height="30">
-              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
-              <path d="M19 10v1a7 7 0 0 1-14 0v-1"/>
-              <line x1="12" y1="18" x2="12" y2="22"/>
-              <line x1="8" y1="22" x2="16" y2="22"/>
-            </svg>
+        <p class="lp-sub">
+          Handle every call. Capture every lead. Book every appointment.<br>
+          Your AI voice agent works 24/7 — no hold times, no missed calls.
+        </p>
+
+        <!-- Central Orb -->
+        <div class="lp-orb-wrap" id="lp-orb-wrap">
+          <div class="lp-orb-glow"></div>
+          <button class="lp-orb" id="vd-orb" onclick="startVoiceDemo()" aria-label="Talk to Empower Voice Agent">
+            <div class="lp-orb-ring lp-orb-ring-1"></div>
+            <div class="lp-orb-ring lp-orb-ring-2"></div>
+            <div class="lp-orb-ring lp-orb-ring-3"></div>
+            <div class="lp-orb-core">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28">
+                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v1a7 7 0 0 1-14 0v-1"/>
+                <line x1="12" y1="18" x2="12" y2="22"/>
+                <line x1="8" y1="22" x2="16" y2="22"/>
+              </svg>
+            </div>
+          </button>
+          <div class="lp-orb-hint">
+            <span class="lp-orb-hint-dot"></span>
+            Talk to Empower — Live Demo
           </div>
         </div>
-        <div class="vd-orb-label">Talk to Empower Voice Agent</div>
-      </div>
 
-      <!-- CTAs -->
-      <div class="landing-ctas">
-        <button class="btn-lp-primary" onclick="showGetAgentModal()">
-          Get a Voice Agent
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </button>
-        <button class="btn-lp-ghost" onclick="showLoginModal()">
-          Open Dashboard
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-        </button>
-      </div>
+        <!-- CTAs -->
+        <div class="lp-ctas">
+          <button class="lp-btn-primary" onclick="showGetAgentModal()">
+            Get Your Voice Agent
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+          <button class="lp-btn-ghost" onclick="showLoginModal()">
+            Open Dashboard
+          </button>
+        </div>
 
-      <!-- Metrics -->
-      <div class="landing-metrics" id="metrics-row">
-        <div class="lm-item"><div class="lm-val">24/7</div><div class="lm-label">Always Active</div></div>
-        <div class="lm-sep"></div>
-        <div class="lm-item"><div class="lm-val">&lt;500ms</div><div class="lm-label">Response Time</div></div>
-        <div class="lm-sep"></div>
-        <div class="lm-item"><div class="lm-val">99.9%</div><div class="lm-label">Uptime SLA</div></div>
-        <div class="lm-sep"></div>
-        <div class="lm-item"><div class="lm-val">$0.05/min</div><div class="lm-label">Starting From</div></div>
+        <!-- Stats strip -->
+        <div class="lp-stats" id="lp-stats">
+          <div class="lp-stat"><div class="lp-stat-val">24/7</div><div class="lp-stat-key">Always Active</div></div>
+          <div class="lp-stat-div"></div>
+          <div class="lp-stat"><div class="lp-stat-val">&lt;500ms</div><div class="lp-stat-key">Response Time</div></div>
+          <div class="lp-stat-div"></div>
+          <div class="lp-stat"><div class="lp-stat-val">99.9%</div><div class="lp-stat-key">Uptime SLA</div></div>
+          <div class="lp-stat-div"></div>
+          <div class="lp-stat"><div class="lp-stat-val">$0.05/min</div><div class="lp-stat-key">Starting From</div></div>
+        </div>
+
       </div>
     </section>
 
-    <!-- Features Section -->
-    <section class="landing-features" id="features">
-      <div class="lf-heading">Everything your business needs</div>
-      <div class="lf-grid">
-        <div class="lf-card">
-          <div class="lf-icon lf-icon-purple">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="22" height="22">
-              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-            </svg>
+    <!-- Features -->
+    <section class="lp-features" id="lp-features">
+      <div class="lp-features-inner">
+        <div class="lp-section-tag">Capabilities</div>
+        <h2 class="lp-section-h2">Built for real business results</h2>
+        <p class="lp-section-sub">Everything you need to automate customer communication and grow without adding headcount.</p>
+
+        <div class="lp-feat-grid">
+          <div class="lp-feat-card">
+            <div class="lp-feat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="20" height="20"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <h3>Always Available</h3>
+            <p>Never miss a call. Your voice agent answers instantly, day or night — no hold times, no voicemail.</p>
           </div>
-          <h3>Always Available</h3>
-          <p>Your AI voice agent answers every call, day or night. No hold times, no voicemail, no missed opportunities.</p>
-        </div>
-        <div class="lf-card">
-          <div class="lf-icon lf-icon-cyan">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="22" height="22">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-            </svg>
+          <div class="lp-feat-card">
+            <div class="lp-feat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="20" height="20"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <h3>Natural Conversations</h3>
+            <p>Powered by the latest AI voice models. Natural pacing, intelligent responses — callers often can't tell the difference.</p>
           </div>
-          <h3>Human-Like Conversations</h3>
-          <p>Powered by the latest AI voice models. Natural pacing, emotional tone, and smart responses — indistinguishable from a real person.</p>
-        </div>
-        <div class="lf-card">
-          <div class="lf-icon lf-icon-green">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="22" height="22">
-              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-            </svg>
+          <div class="lp-feat-card">
+            <div class="lp-feat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="20" height="20"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <h3>Automatic Lead Capture</h3>
+            <p>Every call is logged, summarized, and analyzed. Leads flagged instantly. Your CRM updated automatically.</p>
           </div>
-          <h3>Real Business Results</h3>
-          <p>Capture leads, schedule appointments, qualify prospects, and handle FAQs. Every call logged, summarized, and measured.</p>
-        </div>
-        <div class="lf-card">
-          <div class="lf-icon lf-icon-amber">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="22" height="22">
-              <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
-            </svg>
+          <div class="lp-feat-card">
+            <div class="lp-feat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="20" height="20"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <h3>Appointment Booking</h3>
+            <p>Integrates with your calendar. Books, reschedules, and confirms appointments automatically during the call.</p>
           </div>
-          <h3>Two Deployment Options</h3>
-          <p>Cloud-managed for simplicity or self-hosted for total control. Switch anytime. Both managed from one dashboard.</p>
+          <div class="lp-feat-card">
+            <div class="lp-feat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="20" height="20"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <h3>Live in Days</h3>
+            <p>Cloud-managed setup in 3–7 business days. No hardware, no IT team, no long-term contracts.</p>
+          </div>
+          <div class="lp-feat-card">
+            <div class="lp-feat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="20" height="20"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            </div>
+            <h3>Full Analytics</h3>
+            <p>Real-time dashboard showing call volume, conversion rates, sentiment, and ROI. Know exactly what's working.</p>
+          </div>
         </div>
+      </div>
+    </section>
+
+    <!-- CTA Banner -->
+    <section class="lp-cta-banner">
+      <div class="lp-cta-banner-inner">
+        <h2 class="lp-cta-banner-h2">Ready to automate your calls?</h2>
+        <p class="lp-cta-banner-sub">Talk to Empower above, or get your own agent live in under a week.</p>
+        <button class="lp-btn-primary" style="margin:0 auto" onclick="showGetAgentModal()">
+          Get Started — No contracts
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
       </div>
     </section>
 
     <!-- Footer -->
-    <footer class="landing-footer">
-      <div class="landing-footer-logo">Empower AI 365</div>
-      <div class="landing-footer-copy">© 2026 Empower AI 365. All rights reserved.</div>
+    <footer class="lp-footer">
+      <div class="lp-footer-inner">
+        <div class="lp-footer-brand">
+          <div class="lp-nav-logo-icon" style="width:28px;height:28px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="14" height="14">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
+              <path d="M19 10v1a7 7 0 0 1-14 0v-1"/>
+            </svg>
+          </div>
+          <span>Empower AI 365</span>
+        </div>
+        <div class="lp-footer-copy">© 2026 Empower AI 365. All rights reserved.</div>
+        <div class="lp-footer-tag">Powered by Empower Voice Agent</div>
+      </div>
     </footer>
 
     <!-- ── Login Modal ───────────────────────────── -->
@@ -273,75 +315,29 @@ function renderLanding() {
   </div>`;
 }
 
-// ── Canvas Particle Animation ────────────────────────────────
+// ── Landing init — nav scroll shadow, scroll reveals ─────────
 function initLandingCanvas() {
-  const canvas = document.getElementById('landing-canvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  let raf;
+  const nav = document.getElementById('lp-nav');
 
-  function resize() {
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
+  function onScroll() {
+    if (!nav) return;
+    if (window.scrollY > 40) nav.classList.add('lp-nav-scrolled');
+    else nav.classList.remove('lp-nav-scrolled');
   }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
 
-  const N = 65;
-  const particles = [];
+  // Scroll-reveal for feature cards
+  const observer = new IntersectionObserver(
+    entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('lp-revealed'); observer.unobserve(e.target); } }),
+    { threshold: 0.12 }
+  );
+  document.querySelectorAll('.lp-feat-card, .lp-cta-banner-inner, .lp-stats').forEach(el => {
+    el.classList.add('lp-reveal');
+    observer.observe(el);
+  });
 
-  function mkParticle() {
-    return {
-      x:  Math.random() * canvas.width,
-      y:  Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.35,
-      vy: (Math.random() - 0.5) * 0.35,
-      r:  Math.random() * 1.8 + 0.4,
-      o:  Math.random() * 0.45 + 0.08,
-    };
-  }
-
-  resize();
-  for (let i = 0; i < N; i++) particles.push(mkParticle());
-
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Draw lines between close particles
-    for (let i = 0; i < N; i++) {
-      for (let j = i + 1; j < N; j++) {
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const d  = Math.sqrt(dx * dx + dy * dy);
-        if (d < 130) {
-          ctx.strokeStyle = `rgba(124,106,255,${0.18 * (1 - d / 130)})`;
-          ctx.lineWidth   = 0.6;
-          ctx.beginPath();
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.stroke();
-        }
-      }
-    }
-
-    // Draw particles
-    particles.forEach(p => {
-      ctx.fillStyle = `rgba(124,106,255,${p.o})`;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fill();
-      p.x += p.vx;
-      p.y += p.vy;
-      if (p.x < -10 || p.x > canvas.width  + 10) p.vx *= -1;
-      if (p.y < -10 || p.y > canvas.height + 10) p.vy *= -1;
-    });
-
-    raf = requestAnimationFrame(draw);
-  }
-
-  draw();
-  window.addEventListener('resize', resize);
-
-  // Cleanup when navigating away
-  return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
+  return () => { window.removeEventListener('scroll', onScroll); observer.disconnect(); };
 }
 
 // ── Modal Controls ───────────────────────────────────────────

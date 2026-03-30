@@ -4,7 +4,7 @@
     {
       "name": "frontend",
       "runtimeExecutable": "C:\\Program Files\\nodejs\\node.exe",
-      "runtimeArgs": ["-e", "const h=require('http'),fs=require('fs'),path=require('path');h.createServer((q,r)=>{let f=path.join('C:/Users/rlyzion/Desktop/Proj',q.url==='/'?'/index.html':q.url);try{const d=fs.readFileSync(f);const m={'html':'text/html','js':'application/javascript','css':'text/css','png':'image/png','jpg':'image/jpeg'}; r.writeHead(200,{'Content-Type':m[f.split('.').pop()]||'text/plain','Access-Control-Allow-Origin':'*'});r.end(d);}catch(e){r.writeHead(404);r.end('Not found');}}).listen(5173,()=>console.log('Serving on 5173'));"],
+      "runtimeArgs": ["-e", "const h=require('http'),fs=require('fs'),path=require('path');h.createServer((q,r)=>{const u=q.url.split('?')[0];let f=path.join('C:/Users/rlyzion/Desktop/Proj',u==='/'?'/index.html':u);try{const d=fs.readFileSync(f);const m={'html':'text/html','js':'application/javascript','css':'text/css','png':'image/png','jpg':'image/jpeg','jpeg':'image/jpeg'};r.writeHead(200,{'Content-Type':m[f.split('.').pop()]||'text/plain','Cache-Control':'no-store','Access-Control-Allow-Origin':'*'});r.end(d);}catch(e){r.writeHead(404);r.end('Not found');}}).listen(5173,()=>console.log('Serving on 5173'));"],
       "port": 5173
     }
   ]

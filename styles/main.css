@@ -2516,30 +2516,32 @@ input[type="range"]::-webkit-slider-thumb:active { cursor: grabbing; box-shadow:
    MODAL MOBILE OVERRIDES — must come after all base modal CSS
    ============================================================ */
 @media (max-width: 768px) {
+  /* Switch to block layout — flex collapses child width on mobile */
   .modal-overlay {
+    display: block !important;
     padding: 16px !important;
-    align-items: center !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
   }
   .lp-modal {
     width: 100% !important;
     max-width: 100% !important;
+    margin: 0 auto !important;
     border-radius: 18px !important;
     padding: 24px 20px 28px !important;
-    max-height: 88vh !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important;
+  }
+  .voice-modal {
+    width: 100% !important;
+    margin: 0 auto !important;
+    border-radius: 20px !important;
+    padding: 24px 20px !important;
+    gap: 14px !important;
   }
   .lp-modal-title { font-size: 19px !important; }
   .lp-field input,
   .lp-field select,
   .lp-field textarea { font-size: 16px !important; padding: 11px 13px !important; }
   .lp-submit-btn { font-size: 15px !important; padding: 13px !important; }
-  .voice-modal {
-    width: 100% !important;
-    border-radius: 20px !important;
-    padding: 24px 20px !important;
-    gap: 14px !important;
-  }
   .vm-3d-scene  { width: 140px !important; height: 140px !important; }
   .vm-3d-sphere { width: 90px !important; height: 90px !important; }
   .vm-sphere-inner { width: 90px !important; height: 90px !important; }

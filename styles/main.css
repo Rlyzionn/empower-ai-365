@@ -1249,15 +1249,15 @@ input[type="range"]::-webkit-slider-thumb:active { cursor: grabbing; box-shadow:
 
   /* ── Modal mobile fixes ── */
   .modal-overlay {
-    padding: 12px;
-    align-items: flex-end;        /* slide up from bottom on mobile */
+    padding: 16px;
+    align-items: center;
   }
   .lp-modal {
     width: 100%;
     max-width: 100%;
-    border-radius: 20px 20px 16px 16px;
+    border-radius: 18px;
     padding: 24px 20px 28px;
-    max-height: 90vh;
+    max-height: 88vh;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
@@ -1292,8 +1292,8 @@ input[type="range"]::-webkit-slider-thumb:active { cursor: grabbing; box-shadow:
 
 /* ── Extra-small phones (≤ 420px) ── */
 @media (max-width: 420px) {
-  .modal-overlay { padding: 8px; }
-  .lp-modal { padding: 20px 16px 24px; border-radius: 18px 18px 12px 12px; }
+  .modal-overlay { padding: 10px; }
+  .lp-modal { padding: 20px 16px 24px; border-radius: 14px; }
   .lp-modal-title { font-size: 17px; }
   .voice-modal { padding: 20px 14px 20px; }
   .vm-3d-scene { width: 120px; height: 120px; }
@@ -1996,10 +1996,6 @@ input[type="range"]::-webkit-slider-thumb:active { cursor: grabbing; box-shadow:
 }
 .modal-overlay.modal-visible .lp-modal { transform: translateY(0) scale(1); }
 
-@media (max-width: 768px) {
-  .lp-modal { transform: translateY(100%); transition: transform 0.32s cubic-bezier(0.22,1,0.36,1); }
-  .modal-overlay.modal-visible .lp-modal { transform: translateY(0); }
-}
 .lp-modal-close {
   position: absolute; top: 16px; right: 16px;
   width: 30px; height: 30px;
@@ -2515,3 +2511,53 @@ input[type="range"]::-webkit-slider-thumb:active { cursor: grabbing; box-shadow:
   border-radius: 20px; padding: 6px 14px;
 }
 
+
+/* ============================================================
+   MODAL MOBILE OVERRIDES — must come after all base modal CSS
+   ============================================================ */
+@media (max-width: 768px) {
+  .modal-overlay {
+    padding: 16px !important;
+    align-items: center !important;
+  }
+  .lp-modal {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 18px !important;
+    padding: 24px 20px 28px !important;
+    max-height: 88vh !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .lp-modal-title { font-size: 19px !important; }
+  .lp-field input,
+  .lp-field select,
+  .lp-field textarea { font-size: 16px !important; padding: 11px 13px !important; }
+  .lp-submit-btn { font-size: 15px !important; padding: 13px !important; }
+  .voice-modal {
+    width: 100% !important;
+    border-radius: 20px !important;
+    padding: 24px 20px !important;
+    gap: 14px !important;
+  }
+  .vm-3d-scene  { width: 140px !important; height: 140px !important; }
+  .vm-3d-sphere { width: 90px !important; height: 90px !important; }
+  .vm-sphere-inner { width: 90px !important; height: 90px !important; }
+  .vm-ring-1 { width: 110px !important; height: 110px !important; margin: -55px 0 0 -55px !important; }
+  .vm-ring-2 { width: 126px !important; height: 126px !important; margin: -63px 0 0 -63px !important; }
+  .vm-ring-3 { width: 138px !important; height: 138px !important; margin: -69px 0 0 -69px !important; }
+  .vm-end-btn { padding: 10px 24px !important; font-size: 13px !important; }
+}
+
+@media (max-width: 420px) {
+  .modal-overlay { padding: 10px !important; }
+  .lp-modal { padding: 20px 16px 24px !important; border-radius: 14px !important; }
+  .lp-modal-title { font-size: 17px !important; }
+  .voice-modal { padding: 20px 14px !important; }
+  .vm-3d-scene  { width: 120px !important; height: 120px !important; }
+  .vm-3d-sphere { width: 76px !important; height: 76px !important; }
+  .vm-sphere-inner { width: 76px !important; height: 76px !important; }
+  .vm-ring-1 { width: 94px  !important; height: 94px  !important; margin: -47px 0 0 -47px !important; }
+  .vm-ring-2 { width: 108px !important; height: 108px !important; margin: -54px 0 0 -54px !important; }
+  .vm-ring-3 { width: 118px !important; height: 118px !important; margin: -59px 0 0 -59px !important; }
+}

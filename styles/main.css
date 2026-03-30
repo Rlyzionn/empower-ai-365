@@ -2516,9 +2516,9 @@ input[type="range"]::-webkit-slider-thumb:active { cursor: grabbing; box-shadow:
    MODAL MOBILE OVERRIDES — must come after all base modal CSS
    ============================================================ */
 @media (max-width: 768px) {
-  /* Switch to block layout — flex collapses child width on mobile */
+  /* flex-direction:column fixes width:100% on flex children */
   .modal-overlay {
-    display: block !important;
+    flex-direction: column !important;
     padding: 16px !important;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch !important;
@@ -2526,13 +2526,11 @@ input[type="range"]::-webkit-slider-thumb:active { cursor: grabbing; box-shadow:
   .lp-modal {
     width: 100% !important;
     max-width: 100% !important;
-    margin: 0 auto !important;
     border-radius: 18px !important;
     padding: 24px 20px 28px !important;
   }
   .voice-modal {
     width: 100% !important;
-    margin: 0 auto !important;
     border-radius: 20px !important;
     padding: 24px 20px !important;
     gap: 14px !important;
